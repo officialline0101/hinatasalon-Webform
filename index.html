@@ -1,0 +1,4081 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予約フォーム</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* 右端の細いナビ（固定） */
+        .side-nav {
+            position: fixed;
+            /* 画面スクロールしても固定 */
+            right: -5px;
+            /* さらに右へ */
+            top: 80%;
+            /* 画面中央に固定 */
+            transform: translateY(-50%) translateX(14px);
+            /* 中央配置と右ずらし */
+            background: #3e3f41;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            border-radius: 10px 0 0 10px;
+            z-index: 1000;
+            width: 35px;
+            /* さらに細く */
+        }
+
+        .side-nav a:active {
+            transform: scale(1.0);
+            /* タップした後に元のサイズに戻す */
+        }
+
+        .side-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 10px;
+            margin: 5px 0;
+            padding: 5px;
+            transition: background 0.3s, transform 0.2s;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+        }
+
+        .side-nav a span {
+            font-size: 24px;
+            /* 矢印をさらに大きく */
+            position: absolute;
+            left: 2px;
+            /* 左端に寄せる */
+            top: 13px;
+            /* さらに下へ */
+        }
+
+        /* スマホ用の微調整 */
+        @media (max-width: 600px) {
+            .side-nav {
+                right: 2px;
+                /* スマホではさらに右端に */
+                width: 30px;
+                /* もっと細く */
+            }
+
+            .side-nav a {
+                width: 28px;
+                height: 28px;
+            }
+
+            .side-nav a i {
+                font-size: 12px;
+                /* スマホではもっと小さく */
+            }
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding-top: 5px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: #fdfdfd;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 95%;
+            max-width: 500px;
+            padding: 25px;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #3e3f41, #0c0c0c);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0px 0px 0px;
+            text-align: center;
+            display: block;
+            margin: -20px -15px 20px -15px;
+            font-size: 26px;
+            font-weight: 100;
+            box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 20px;
+            padding: 3px;
+            font-weight: 400;
+            background-color: #ffffff;
+            color: #1f1f20;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 20px;
+            position: relative;
+            overflow: hidden;
+            border-top: 3px solid black;
+            /* 上の線 */
+            border-bottom: 3px solid black;
+            /* 下の線 */
+        }
+
+        .labelnasihissu {
+            display: block;
+            margin-bottom: 20px;
+            padding: 3px;
+            font-weight: 400;
+            background-color: #ffffff;
+            color: #1f1f20;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 30px;
+            position: relative;
+            overflow: hidden;
+            border-top: 3px solid black;
+            /* 上の線 */
+            border-bottom: 3px solid black;
+            /* 下の線 */
+        }
+
+        .labeltyuuou {
+            display: block;
+            margin-bottom: 20px;
+            padding: 3px;
+            background-color: #ffffff;
+            color: #1f1f20;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 0px;
+            position: relative;
+            overflow: hidden;
+            border-top: 2px solid black;
+            /* 上の線 */
+            border-bottom: 2px solid black;
+            /* 下の線 */
+        }
+
+        .labelContent {
+            display: block;
+            margin-bottom: 10px;
+            padding: 3px;
+            font-weight: 400;
+            background-color: #ffffff;
+            color: rgb(20, 20, 20);
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 0px;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid black;
+            /* 上の線 */
+            border-bottom: 1px solid black;
+            /* 下の線 */
+        }
+
+        /* 必須マークのスタイル */
+        .required {
+            color: red;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .required-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: #13ca5e;
+            font-weight: bold;
+            font-size: 0.9em;
+            border-radius: 4px;
+            padding: 2px 6px;
+            border: 2px solid #13ca5e;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #555555;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.3s;
+
+            /* 以下を追加 */
+            position: relative;
+            top: -5px;
+            /* ← 上に5pxずらす（数値調整OK） */
+        }
+
+        .visit-buttons,
+        .symptoms,
+        .menu-sections,
+        .opti {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .visit-buttons button,
+        .symptoms button,
+        .menu-sections button,
+        .opti button {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #2e2e2e;
+            border-radius: 4px;
+            background-color: #ffffff;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .visit-buttons button.active,
+        .symptoms button.active,
+        .menu-sections button.active,
+        .opti button.active {
+            background-color: #ffffff;
+            color: #141414;
+        }
+
+        .date-inputs input[type="datetime-local"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ff4c4c;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .calendar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        .calendar {
+            flex: 1;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* セル幅を均等にする */
+        }
+
+        .calendar th,
+        .calendar td {
+            font-size: 12.5px;
+            /* ここでフォントサイズを変更 */
+            text-align: center;
+            padding: 5px;
+            cursor: pointer;
+            vertical-align: top;
+            width: auto;
+            /* 通常のセルは自動調整 */
+            box-sizing: border-box;
+            border: 1px solid #1a1a1a;
+        }
+
+        .calendar th:first-child,
+        .calendar td:first-child {
+            width: 17%;
+            /* ここで時間列の幅を調整 */
+            font-size: 12.5px;
+            /* フォントサイズを変更 */
+        }
+
+        .calendar th {
+            background-color: #f7f7f7;
+        }
+
+        .calendar td:hover {
+            background-color: #ddd;
+        }
+
+        .calendar td.selected {
+            background-color: #3e3f41;
+            color: #fff;
+        }
+
+        .week-button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .week-button {
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: #222222;
+            border: 1px solid black;
+            /* ← 外枠を黒1pxに設定 */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            transform-origin: center center;
+        }
+
+        .week-button:hover {
+            background-color: #ffffff;
+            transform: scale(1.15);
+            /* ドーン！ってくらい拡大🔥 */
+        }
+
+        .week-button:active {
+            transform: scale(0.95);
+            /* クリックした瞬間にギュッと縮む💥 */
+        }
+
+        .month-button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .month-button {
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: #222222;
+            border: 1px solid black;
+            /* ← 外枠を黒1pxに設定 */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            transform-origin: center center;
+        }
+
+        .month-button:hover {
+            background-color: #ffffff;
+            transform: scale(1.15);
+            /* ドーン！ってくらい拡大🔥 */
+        }
+
+        .month-button:active {
+            transform: scale(0.95);
+            /* クリックした瞬間にギュッと縮む💥 */
+        }
+
+        .current-month {
+            font-size: 16px;
+            font-weight: 300;
+            color: #3e3f41;
+            margin-top: 20px;
+            /* 下にずらす */
+            display: inline-block;
+            /* margin-top を適用しやすくする */
+        }
+
+        .loading-spinner {
+            position: fixed;
+            /* 画面全体に対応 */
+            top: 50%;
+            /* 縦中央 */
+            left: 50%;
+            /* 横中央 */
+            transform: translate(-50%, -50%);
+            display: none;
+            /* 初期状態は非表示 */
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            /* 半透明の黒背景で注目度アップ */
+            padding: 40px;
+            /* 周囲に余白をつける */
+            border-radius: 10px;
+            /* 角丸で柔らかい印象 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            /* 少し立体感を追加 */
+        }
+
+        .spinner {
+            width: 60px;
+            /* スピナーをさらに大きく */
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            /* 薄い白で枠を柔らかく */
+            border-top-color: #00d1ff;
+            /* 明るい青で目立たせる */
+            border-radius: 50%;
+            /* 丸い形状 */
+            animation: spin 0.7s linear infinite;
+            /* 滑らかで速い回転 */
+            margin-left: 12px;
+            /* スピナーを右にずらす */
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            /* スピナーとテキストの間隔 */
+            font-size: 15px;
+            /* さらに大きなフォントサイズ */
+            font-weight: bold;
+            /* 太字で目立たせる */
+            color: #ffffff;
+            /* 純白で高いコントラスト */
+            letter-spacing: 1px;
+            /* 文字間隔を広げてモダンな印象に */
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            /* テキストに影をつけて視認性アップ */
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .available {
+            color: red;
+        }
+
+        .unavailable {
+            background-color: #d3d3d3;
+        }
+
+        .menu-section {
+            display: none;
+        }
+
+        .menu-section.active {
+            display: block;
+        }
+
+        #repairLabel,
+        #repairButtons {
+            display: none;
+        }
+
+        #treatment-text {
+            background-color: #f9f9f9;
+            padding: 16px 20px;
+            border: 1px solid #000000;
+            border-top: none;
+            /* ← 上の横線を非表示 */
+            border-radius: 0 0 3px 3px;
+            /* ← 上の角の丸みをなくして自然に */
+            margin-top: -13px;
+            /* ← 少し上に詰める（12px → 4px） */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            font-size: 15px;
+            line-height: 1.6;
+            color: #000000;
+        }
+
+        .highlight-background {
+            background-color: #f9f9d6;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            /* 上に余白を追加 */
+            text-align: center;
+            /* コンテナ内の要素を中央に配置 */
+        }
+
+        .red-circle {
+            color: red;
+            /* 赤色に設定 */
+        }
+
+        .bold-cross {
+            font-weight: bold;
+            /* 太文字に設定 */
+        }
+
+        .info-text {
+            position: relative;
+            /* ← 上下移動を有効にする */
+            top: -20px;
+            /* ← 上に8pxずらす（数値調整可） */
+            margin-top: 0;
+            /* ← 上のマージンは0にしておくと自然 */
+            margin-bottom: 0px;
+            font-size: 13px;
+            color: #000000;
+            line-height: 1.5;
+            text-align: center;
+            word-wrap: break-word;
+            background-color: #f3f3f3;
+            padding: 0px;
+            border-radius: 0 0 4px 4px;
+            border: 1px solid black;
+            border-top: none;
+        }
+
+        /* スマホ対応 */
+        @media (max-width: 768px) {
+            .info-text {
+                font-size: 11.5px;
+                top: -20px;
+                /* ← モバイルでは少し控えめに上にずらす */
+                line-height: 2.0;
+            }
+        }
+
+        .symptoms,
+        .options {
+            display: block;
+            /* ボタンを縦並びに */
+        }
+
+        .symptoms button,
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            background-color: #ffffff;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .symptoms button.active,
+        .options button.active {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .highlight-background {
+            cursor: pointer;
+            background-color: #13ca5e;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .symptoms,
+        .options {
+            display: block;
+            /* ボタンを縦並びに */
+        }
+
+        .highlight-text {
+            display: inline-block;
+            color: #080808;
+            /* オプションテキストの色 */
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: -6px 0;
+        }
+
+        hr {
+            margin: -5px 0;
+        }
+
+        .edit-button {
+            background-color: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid black;
+            /* ← 外枠を黒1pxに設定 */
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            /* 改行を防ぐ */
+            width: auto;
+            text-align: center;
+        }
+
+        .edit-button:hover {
+            background-color: #141414;
+            color: #ffffff;
+            /* ← 黒背景に合わせて文字色を白にすると視認性が上がります（任意） */
+        }
+
+        /* 100点の予約フォームCSS */
+
+        input:focus,
+        textarea:focus {
+            border-color: #13ca5e;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #3e3f41;
+            color: #000000;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #e9e9e9;
+            transform: scale(1.05);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #272727;
+            margin-top: 12px;
+            /* ← ここで下方向にずらす */
+        }
+
+        .submit-button:hover {
+            background-color: #272727;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            input,
+            button {
+                font-size: 14px;
+            }
+        }
+
+        button.active {
+            outline: 1px solid #2b2b2b;
+            /* ここで枠線を指定 */
+            outline-offset: 2px;
+            /* 外側に色を追加 */
+            box-shadow: 0 0 0 3px #2b2b2b
+        }
+
+        /* 必須マークのスタイル */
+        .required {
+            color: #ffffff;
+            /* ゴールド（黄色） */
+            font-weight: lighter;
+            /* 文字を細くする */
+            font-size: 0.6em;
+            margin-left: 5px;
+            vertical-align: 0.8em;
+            /* 位置を少し上に調整 */
+
+            /* 白色背景の四角形 */
+            background-color: rgb(255, 15, 15);
+            padding: 0 5px;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+
+        .current-month {
+            text-align: center;
+            display: block;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -10px);
+            /* Y方向に上げる */
+            background-color: #3e3f41;
+            color: #fff;
+            padding: 3px 12px;
+            /* ボックスのパディングを縮小 */
+            border-radius: 8px;
+            /* 角の丸みを少し減少 */
+            font-size: 1.4rem;
+            /* フォントサイズを小さく */
+            font-weight: 300;
+            box-shadow: 0 2px 6px rgba(47, 103, 167, 0.2);
+            /* 影も控えめに */
+        }
+
+        /* ナビゲーションバー */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e1e2d;
+            padding: 10px;
+            border-radius: 10px 0 0 10px;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 10px;
+            background: #4a90e2;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #357ac4;
+        }
+
+        /* スクロール用のセクション */
+        .section {
+            padding: 50px 10px;
+            margin-top: 30px;
+        }
+
+        .repeat-booking-wrapper {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #repeatBookingButton {
+            background-color: #f7f7f7;
+            color: #000000;
+            border: 1px solid #000000;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #repeatBookingButton:hover {
+            background-color: #f1f1f1;
+            color: #000000;
+        }
+
+        /* メール専用ラッパー */
+        .email-input-row {
+            display: flex;
+            align-items: center;
+            /* 縦中央 */
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+        }
+
+        /* メール欄のinputやselectは共通幅指定しない */
+        .email-input-row input,
+        .email-input-row select {
+            flex: 1;
+            min-width: 10;
+            height: 42px;
+            padding: 0 7px;
+            border: 1px solid #555;
+            border-radius: 3px;
+            font-size: 16px;
+            line-height: normal;
+            box-sizing: border-box;
+            vertical-align: middle;
+        }
+
+        /* ドメイン選択だけ幅を固定・縮める */
+        #emailDomainSelect {
+            flex: 0 0 85px;
+            /* ← 固定幅にする（例: 180px） */
+            max-width: 200px;
+            /* ← 伸びすぎ防止（任意） */
+        }
+
+        /* ドメイン選択だけ位置を上にずらす */
+        #emailDomainSelect {
+            position: relative;
+            top: -10px;
+            /* ← 数値を調整して好みの高さに */
+            /* または transform でもOK */
+            /* transform: translateY(-2px); */
+        }
+
+        /* ドメイン選択だけ幅を固定・縮める */
+        #emailDomainSelect2 {
+            flex: 0 0 85px;
+            /* ← 固定幅にする（例: 180px） */
+            max-width: 200px;
+            /* ← 伸びすぎ防止（任意） */
+        }
+
+        /* ドメイン選択だけ位置を上にずらす */
+        #emailDomainSelect2 {
+            position: relative;
+            top: -10px;
+            /* ← 数値を調整して好みの高さに */
+            /* または transform でもOK */
+            /* transform: translateY(-2px); */
+        }
+
+        /* select 特有の見た目調整（矢印） */
+        .email-input-row select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background:
+                #fff url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='black' d='M6 8L0 0h12z'/%3E%3C/svg%3E") no-repeat right 10px center;
+            background-size: 12px 8px;
+            padding-right: 30px;
+            /* 矢印ぶん */
+            display: inline-flex;
+            /* ← これで縦中央が安定 */
+            align-items: center;
+        }
+
+        /* @ マークも高さを合わせて中央に */
+        .email-input-row .at-mark {
+            display: inline-flex;
+            align-items: center;
+            height: 42px;
+            /* input/select と同じ高さ */
+            padding: 0 2px;
+            font-size: 16px;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        /* （任意）iOS/Safari での上下余白ブレ抑制 */
+        @supports (-webkit-touch-callout: none) {
+            .email-input-row select {
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+        }
+
+        /* （最終手段・Windows Chromeで1px下がる場合） */
+        @media (min-width:0) {
+            .email-input-row select {
+                position: relative;
+                top: -1px;
+            }
+        }
+
+        /* エラースタイル（赤枠） */
+        .input-error {
+            border-color: #d00 !important;
+            box-shadow: 0 0 0 2px rgba(221, 0, 0, .12);
+        }
+
+        /* 2組目用ラッパ（ポップアップの基準） */
+        .field-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* 2組目のselect用（既存の固定幅を踏襲） */
+        .field-wrap.select-narrow {
+            flex: 0 0 85px;
+            max-width: 200px;
+        }
+
+        /* エラーポップアップ */
+        .popover-error {
+            position: absolute;
+            top: -28px;
+            /* ボックスの少し上 */
+            left: 0;
+            background: #d00;
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.6;
+            padding: 2px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1;
+            display: none;
+            /* JSで表示/非表示を制御 */
+        }
+
+        .popover-error::after {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            left: 12px;
+            border: 6px solid transparent;
+            border-top-color: #d00;
+        }
+
+        /* 2組目のselect用（85px固定） */
+        .field-wrap.select-narrow {
+            flex: 0 0 85px;
+            /* 横幅を85pxに固定 */
+            max-width: 85px;
+            /* 伸びないように上限も85pxに */
+        }
+
+        /* 中の select が親幅いっぱいに広がるように */
+        .field-wrap.select-narrow select {
+            width: 100%;
+        }
+
+        /* ▼ここを差し替え（現在は 85px 固定になっている箇所） */
+        .field-wrap.select-narrow {
+            /* 好みの幅に拡大（例：180〜220pxあたり） */
+            flex: 0 0 160px;
+            /* 横幅を200pxに固定する */
+            max-width: 160px;
+            /* 伸びすぎ防止の上限も同じに */
+        }
+
+        /* 中の select は親幅いっぱいに広げる設定のままでOK */
+        .field-wrap.select-narrow select {
+            width: 100%;
+        }
+
+        /* メールアドレス欄共通スタイル */
+        .email-input-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+        }
+
+        /* input, select 共通設定 */
+        .email-input-row input,
+        .email-input-row select {
+            flex: 1;
+            height: 42px;
+            padding: 0 7px;
+            border: 1px solid #555;
+            border-radius: 3px;
+            font-size: 16px;
+            line-height: normal;
+            box-sizing: border-box;
+            vertical-align: middle;
+        }
+
+        /* ドメイン選択（共通） */
+        .email-input-row select.domain-select {
+            flex: 0 0 160px;
+            max-width: 160px;
+            position: relative;
+            top: -10px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background:
+                #fff url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='black' d='M6 8L0 0h12z'/%3E%3C/svg%3E") no-repeat right 10px center;
+            background-size: 12px 8px;
+            padding-right: 30px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        /* @マーク表示部 */
+        .email-input-row .at-mark {
+            display: inline-flex;
+            align-items: center;
+            height: 42px;
+            padding: 0 2px;
+            font-size: 16px;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        /* Safari対策 */
+        @supports (-webkit-touch-callout: none) {
+            .email-input-row select.domain-select {
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+        }
+
+        /* Windows Chromeでの微調整 */
+        @media (min-width:0) {
+            .email-input-row select.domain-select {
+                top: -1px;
+            }
+        }
+
+        /* エラー（赤枠） */
+        .input-error {
+            border-color: #d00 !important;
+            box-shadow: 0 0 0 2px rgba(221, 0, 0, .12);
+        }
+
+        /* ラッパー（エラーメッセージ位置の基準） */
+        .field-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* 狭いセレクト用ラッパ（ドメインセレクト） */
+        .field-wrap.select-narrow {
+            flex: 0 0 160px;
+            max-width: 160px;
+        }
+
+        .field-wrap.select-narrow select {
+            width: 100%;
+        }
+
+        /* エラーポップアップ */
+        .popover-error {
+            position: absolute;
+            top: -28px;
+            left: 0;
+            background: #d00;
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.6;
+            padding: 2px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1;
+            display: none;
+        }
+
+        .popover-error::after {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            left: 12px;
+            border: 6px solid transparent;
+            border-top-color: #d00;
+        }
+
+  .submit-overlay, .final-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(255,255,255,0.92);
+    display: none; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+  }
+  .submit-overlay .box, .final-screen .box {
+    max-width: 420px; width: 92%;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 28px 24px;
+  }
+  .submit-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #e5e7eb; border-top-color: #22c55e; border-radius: 50%;
+    margin: 0 auto 12px; animation: submitspin 0.9s linear infinite;
+  }
+  @keyframes submitspin { to { transform: rotate(360deg);} }
+  .submit-overlay .title { font-weight: 700; margin-bottom: 6px; }
+  .submit-overlay .msg   { color: #4b5563; font-size: 14px; }
+  .final-screen .title   { font-weight: 800; font-size: 20px; margin-bottom: 6px; }
+  .final-screen .msg     { color: #374151; line-height: 1.7; margin-bottom: 16px; }
+
+  .btn-primary, .btn-ghost {
+    appearance: none; border: 0; cursor: pointer;
+    padding: 10px 14px; border-radius: 10px; font-weight: 700;
+  }
+  .btn-primary { background:#22c55e; color:#fff; }
+  .btn-ghost  { background:#f3f4f6; color:#111827; }
+
+  /* 全タップ不可（overlay/完了画面は操作可に） */
+  body.locked * { pointer-events: none !important; }
+  body.locked .submit-overlay, body.locked .final-screen,
+  body.locked .submit-overlay * , body.locked .final-screen * { pointer-events: auto !important; }
+
+        /* 右端の細いナビ（固定） */
+        .side-nav {
+            position: fixed;
+            /* 画面スクロールしても固定 */
+            right: -5px;
+            /* さらに右へ */
+            top: 80%;
+            /* 画面中央に固定 */
+            transform: translateY(-50%) translateX(14px);
+            /* 中央配置と右ずらし */
+            background: #ede993;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            border-radius: 10px 0 0 10px;
+            z-index: 1000;
+            width: 35px;
+            /* さらに細く */
+        }
+
+        .side-nav a:active {
+            transform: scale(1.0);
+            /* タップした後に元のサイズに戻す */
+        }
+
+        .side-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #262627;
+            text-decoration: none;
+            font-size: 10px;
+            margin: 5px 0;
+            padding: 5px;
+            transition: background 0.3s, transform 0.2s;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+        }
+
+        .side-nav a span {
+            font-size: 24px;
+            /* 矢印をさらに大きく */
+            position: absolute;
+            left: 2px;
+            /* 左端に寄せる */
+            top: 13px;
+            /* さらに下へ */
+        }
+
+        /* スマホ用の微調整 */
+        @media (max-width: 600px) {
+            .side-nav {
+                right: 2px;
+                /* スマホではさらに右端に */
+                width: 30px;
+                /* もっと細く */
+            }
+
+            .side-nav a {
+                width: 28px;
+                height: 28px;
+            }
+
+            .side-nav a i {
+                font-size: 12px;
+                /* スマホではもっと小さく */
+            }
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding-top: 5px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: #fdfdfd;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 95%;
+            max-width: 500px;
+            padding: 25px;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        h1 {
+            background: url('https://www.dropbox.com/scl/fi/gercij3987y1madd5mzsn/imgi_7_123657_business_pic_222222222222222.png?rlkey=107zptry2lk2vi6b8smrwpk88&st=cn5j1b23&raw=1') center / 190% no-repeat;
+            /* ↑ cover の代わりに 120% とすると画像を少し拡大表示（100%が原寸） */
+
+            color: #fff;
+            padding: 60px 20px;
+            border-radius: 0;
+            text-align: center;
+            margin: -20px -15px 20px -15px;
+            font-size: 26px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 20px;
+            padding: 3px;
+            font-weight: 400;
+            background-color: #ede993;
+            color: #262627;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 20px;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid black;
+            /* 上の線 */
+            border-bottom: 1px solid black;
+            /* 下の線 */
+        }
+
+        .labelkibounitizi {
+            display: block;
+            margin: 10px 0;
+            /* ← 上下に5px、左右は0 */
+            padding: 3px 0;
+            /* ← 内側の余白は最小限 */
+            font-weight: 400;
+            background-color: #ede993;
+            color: #262627;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 20px;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid black;
+            /* 上の線 */
+            border-bottom: 1px solid black;
+            /* 下の線 */
+            line-height: 1.2;
+            /* ← 少し読みやすく */
+        }
+
+        .labeltyuuou {
+            display: block;
+            margin-bottom: 20px;
+            padding: 3px;
+            background-color: #ede993;
+            color: #262627;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 0px;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid black;
+            /* 上の線 */
+            border-bottom: 1px solid black;
+            /* 下の線 */
+        }
+
+        .labelmessezi {
+            display: block;
+            margin-top: 10px;
+            /* ← 枠の上に10pxの隙間 */
+            margin-bottom: 20px;
+            padding: 3px;
+            background-color: #ede993;
+            color: #262627;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 0px;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid black;
+            /* 上の線 */
+            border-bottom: 1px solid black;
+            /* 下の線 */
+        }
+
+        .labelContent {
+            display: block;
+            margin-bottom: 10px;
+            padding: 3px;
+            font-weight: 400;
+            background-color: #ede993;
+            color: #262627;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 0px;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid black;
+            /* 上の線 */
+            border-bottom: 1px solid black;
+            /* 下の線 */
+        }
+
+        /* 必須マークのスタイル */
+        .required {
+            color: red;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .required-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: #ede993;
+            font-weight: bold;
+            font-size: 0.9em;
+            border-radius: 4px;
+            padding: 2px 6px;
+            border: 2px solid #ede993;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #555555;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.3s;
+
+            /* 以下を追加 */
+            position: relative;
+            top: -5px;
+            /* ← 上に5pxずらす（数値調整OK） */
+        }
+
+        .visit-buttons,
+        .symptoms,
+        .menu-sections,
+        .irradiations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .visit-buttons button,
+        .symptoms button,
+        .menu-sections button,
+        .irradiations button {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #2e2e2e;
+            border-radius: 4px;
+            background-color: #f7f7f7;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .visit-buttons button.active,
+        .symptoms button.active,
+        .menu-sections button.active,
+        .irradiations button.active {
+            background-color: #ffffff;
+            color: #141414;
+        }
+
+        .date-inputs input[type="datetime-local"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ff4c4c;
+            color: #0e0e0e;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .calendar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        .calendar {
+            flex: 1;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* セル幅を均等にする */
+        }
+
+        .calendar th,
+        .calendar td {
+            font-size: 12.5px;
+            /* ここでフォントサイズを変更 */
+            text-align: center;
+            padding: 5px;
+            cursor: pointer;
+            vertical-align: top;
+            width: auto;
+            /* 通常のセルは自動調整 */
+            box-sizing: border-box;
+            border: 1px solid #1a1a1a;
+        }
+
+        .calendar th:first-child,
+        .calendar td:first-child {
+            width: 17%;
+            /* ここで時間列の幅を調整 */
+            font-size: 12.5px;
+            /* フォントサイズを変更 */
+        }
+
+        .calendar th {
+            background-color: #f7f7f7;
+        }
+
+        .calendar td:hover {
+            background-color: #ddd;
+        }
+
+        .calendar td.selected {
+            background-color: #3e3f41;
+            color: #fff;
+        }
+
+        .week-button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .week-button {
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: #222222;
+            border: 1px solid black;
+            /* ← 外枠を黒1pxに設定 */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            transform-origin: center center;
+        }
+
+        .week-button:hover {
+            background-color: #ffffff;
+            transform: scale(1.15);
+            /* ドーン！ってくらい拡大🔥 */
+        }
+
+        .week-button:active {
+            transform: scale(0.95);
+            /* クリックした瞬間にギュッと縮む💥 */
+        }
+
+        .month-button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .month-button {
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: #222222;
+            border: 1px solid black;
+            /* ← 外枠を黒1pxに設定 */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            transform-origin: center center;
+        }
+
+        .month-button:hover {
+            background-color: #ffffff;
+            transform: scale(1.15);
+            /* ドーン！ってくらい拡大🔥 */
+        }
+
+        .month-button:active {
+            transform: scale(0.95);
+            /* クリックした瞬間にギュッと縮む💥 */
+        }
+
+        .current-month {
+            font-size: 16px;
+            font-weight: 300;
+            color: #3e3f41;
+            margin-top: 20px;
+            /* 下にずらす */
+            display: inline-block;
+            /* margin-top を適用しやすくする */
+        }
+
+        .loading-spinner {
+            position: fixed;
+            /* 画面全体に対応 */
+            top: 50%;
+            /* 縦中央 */
+            left: 50%;
+            /* 横中央 */
+            transform: translate(-50%, -50%);
+            display: none;
+            /* 初期状態は非表示 */
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            /* 半透明の黒背景で注目度アップ */
+            padding: 40px;
+            /* 周囲に余白をつける */
+            border-radius: 10px;
+            /* 角丸で柔らかい印象 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            /* 少し立体感を追加 */
+        }
+
+        .spinner {
+            width: 60px;
+            /* スピナーをさらに大きく */
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            /* 薄い白で枠を柔らかく */
+            border-top-color: #00d1ff;
+            /* 明るい青で目立たせる */
+            border-radius: 50%;
+            /* 丸い形状 */
+            animation: spin 0.7s linear infinite;
+            /* 滑らかで速い回転 */
+            margin-left: 12px;
+            /* スピナーを右にずらす */
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            /* スピナーとテキストの間隔 */
+            font-size: 15px;
+            /* さらに大きなフォントサイズ */
+            font-weight: bold;
+            /* 太字で目立たせる */
+            color: #ffffff;
+            /* 純白で高いコントラスト */
+            letter-spacing: 1px;
+            /* 文字間隔を広げてモダンな印象に */
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            /* テキストに影をつけて視認性アップ */
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .available {
+            color: red;
+        }
+
+        .unavailable {
+            background-color: #d3d3d3;
+        }
+
+        .menu-section {
+            display: none;
+        }
+
+        .menu-section.active {
+            display: block;
+        }
+
+        #repairLabel,
+        #repairButtons {
+            display: none;
+        }
+
+        #treatment-text {
+            background-color: #f9f9f9;
+            padding: 16px 20px;
+            border: 1px solid #000000;
+            border-top: none;
+            /* ← 上の横線を非表示 */
+            border-radius: 0 0 3px 3px;
+            /* ← 上の角の丸みをなくして自然に */
+            margin-top: -13px;
+            /* ← 少し上に詰める（12px → 4px） */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            font-size: 15px;
+            line-height: 1.6;
+            color: #000000;
+            text-align: center;
+            /* ← 中央揃え */
+        }
+
+        .highlight-background {
+            background-color: #f9f9d6;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            /* 上に余白を追加 */
+            text-align: center;
+            /* コンテナ内の要素を中央に配置 */
+        }
+
+        .red-circle {
+            color: red;
+            /* 赤色に設定 */
+        }
+
+        .bold-cross {
+            font-weight: bold;
+            /* 太文字に設定 */
+        }
+
+        .info-text {
+            position: relative;
+            /* ← 上下移動を有効にする */
+            top: -20px;
+            /* ← 上に8pxずらす（数値調整可） */
+            margin-top: 0;
+            /* ← 上のマージンは0にしておくと自然 */
+            margin-bottom: 0px;
+            font-size: 13px;
+            color: #000000;
+            line-height: 1.5;
+            text-align: center;
+            word-wrap: break-word;
+            background-color: #f3f3f3;
+            padding: 0px;
+            border-radius: 0 0 4px 4px;
+            border: 1px solid black;
+            border-top: none;
+        }
+
+        /* スマホ対応 */
+        @media (max-width: 768px) {
+            .info-text {
+                font-size: 11.5px;
+                top: -20px;
+                /* ← モバイルでは少し控えめに上にずらす */
+                line-height: 2.0;
+            }
+        }
+
+        .symptoms,
+        .options {
+            display: block;
+            /* ボタンを縦並びに */
+        }
+
+        .symptoms button,
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            background-color: #ffffff;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .symptoms button.active,
+        .options button.active {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .highlight-background {
+            cursor: pointer;
+            background-color: #ede993;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .symptoms,
+        .options {
+            display: block;
+            /* ボタンを縦並びに */
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: -6px 0;
+        }
+
+        hr {
+            margin: -5px 0;
+        }
+
+        .edit-button {
+            background-color: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid black;
+            /* ← 外枠を黒1pxに設定 */
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            /* 改行を防ぐ */
+            width: auto;
+            text-align: center;
+        }
+
+        .edit-button:hover {
+            background-color: #ede993;
+            color: #ffffff;
+            /* ← 黒背景に合わせて文字色を白にすると視認性が上がります（任意） */
+        }
+
+        /* 100点の予約フォームCSS */
+
+        input:focus,
+        textarea:focus {
+            border-color: #ede993;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #3e3f41;
+            color: #000000;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #e9e9e9;
+            transform: scale(1.05);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #ede993;
+            margin-top: 12px;
+            /* ← ここで下方向にずらす */
+        }
+
+        .submit-button:hover {
+            background-color: #ede993;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            input,
+            button {
+                font-size: 14px;
+            }
+        }
+
+        button.active {
+            outline: 1px solid #2b2b2b;
+            /* ここで枠線を指定 */
+            outline-offset: 2px;
+            /* 外側に色を追加 */
+            box-shadow: 0 0 0 3px #ede993
+        }
+
+        /* 必須マークのスタイル */
+        .required {
+            color: #ffffff;
+            /* ゴールド（黄色） */
+            font-weight: lighter;
+            /* 文字を細くする */
+            font-size: 0.6em;
+            margin-left: 5px;
+            vertical-align: 0.8em;
+            /* 位置を少し上に調整 */
+
+            /* 白色背景の四角形 */
+            background-color: rgb(255, 15, 15);
+            padding: 0 5px;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+
+        .current-month {
+            text-align: center;
+            display: block;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -10px);
+            /* Y方向に上げる */
+            background-color: #3e3f41;
+            color: #fff;
+            padding: 3px 12px;
+            /* ボックスのパディングを縮小 */
+            border-radius: 8px;
+            /* 角の丸みを少し減少 */
+            font-size: 1.4rem;
+            /* フォントサイズを小さく */
+            font-weight: 300;
+            box-shadow: 0 2px 6px rgba(47, 103, 167, 0.2);
+            /* 影も控えめに */
+        }
+
+        /* ナビゲーションバー */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e1e2d;
+            padding: 10px;
+            border-radius: 10px 0 0 10px;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 10px;
+            background: #4a90e2;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #357ac4;
+        }
+
+        /* スクロール用のセクション */
+        .section {
+            padding: 50px 10px;
+            margin-top: 30px;
+        }
+
+        .repeat-booking-wrapper {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #repeatBookingButton {
+            background-color: #f7f7f7;
+            color: #000000;
+            border: 1px solid #000000;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #repeatBookingButton:hover {
+            background-color: #f1f1f1;
+            color: #000000;
+        }
+
+        :root {
+            --ink: #111;
+            --ink-muted: #666;
+            --line: #111;
+            --hairline: #f2f2f2;
+            --card: #fff;
+            --radius: 16px;
+        }
+
+        /* 画像エリア（黒線を削除） */
+        .treatment-image {
+            position: relative;
+            width: 100%;
+            height: auto;
+            margin: 0px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            /* border: 1.5px solid var(--line); ←削除 */
+            box-shadow: 0 1px 0 rgba(0, 0, 0, .06);
+        }
+
+        .treatment-image img {
+            width: 100%;
+            display: none;
+            border-radius: 0;
+        }
+
+        .treatment-image {
+            display: none !important;
+        }
+
+        /* 詳細・料金セクション */
+        .treatment-description,
+        .treatment-price,
+        .treatment-basic {
+            position: relative;
+            margin-top: 20px;
+            padding: 18px 0;
+            background: #fff;
+            border-top: 2.5px solid var(--line);
+            border-bottom: 0;
+            border-left: none;
+            border-right: none;
+            border-radius: 0;
+            box-shadow: none;
+            line-height: 1.6;
+            color: #222;
+            font-size: 12px;
+            text-align: left;
+            width: 100%;
+            max-width: none;
+            box-sizing: border-box;
+        }
+
+        /* 見出しラベル */
+        .treatment-description::before,
+        .treatment-price::before,
+        .treatment-basic::before {
+            content: "";
+            position: absolute;
+            top: -18px;
+            left: 14px;
+            padding: 4px 12px;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: .06em;
+            color: var(--ink);
+            background: #fff;
+            border: 1.5px solid var(--line);
+            border-radius: 999px;
+        }
+
+        .treatment-description::before {
+            content: "詳細";
+        }
+
+        .treatment-price::before {
+            content: "診察料";
+        }
+
+        /* 🆕 基本料金ラベル */
+        .treatment-basic::before {
+            content: "基本料金";
+        }
+
+        /* 強調 */
+        .treatment-price strong,
+        .treatment-basic strong {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .treatment-price span,
+        .treatment-basic span {
+            color: var(--ink-muted);
+        }
+
+        @media (min-width: 720px) {
+            .treatment-title {
+                font-size: 26px;
+            }
+
+            .treatment-price strong,
+            .treatment-basic strong {
+                font-size: 26px;
+            }
+        }
+
+        /* 重複文言を非表示 */
+        .treatment-price>span:first-child {
+            display: none;
+        }
+
+        /* 画面が広い時 */
+        @media (min-width: 720px) {
+            .treatment-title {
+                font-size: 26px;
+            }
+
+            .treatment-price strong {
+                font-size: 26px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            input,
+            button {
+                font-size: 14px;
+            }
+        }
+
+        .datetime-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 16px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .datetime-input {
+            width: 100%;
+            padding: 18px;
+            /* 少し大きめにして押しやすく */
+            font-size: 18px;
+            border: 1px solid #000000;
+            /* 少し濃くして視認性アップ */
+            border-radius: 8px;
+            /* 指触りの良いデザイン */
+            box-sizing: border-box;
+            background-color: #fff;
+            color: #333;
+            appearance: none;
+            /* OSに左右されにくくする */
+            touch-action: manipulation;
+            /* モバイルのタップ精度向上 */
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .datetime-input:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+            /* タップ時の視覚的フィードバック */
+            outline: none;
+        }
+
+        .kibounitizi {
+            display: block;
+            /* ブロック要素として表示。幅いっぱいに広がるよ！ */
+            margin-bottom: 1px;
+            /* 下に10pxのスペースをあける（余白） */
+            padding: 3px;
+            /* 内側に3pxのスペースをつける（中身がくっつかないように） */
+            font-weight: 600;
+            /* 文字を少し太くする（600は太さの目安） */
+            background-color: #45c4b7;
+            /* 背景の色をくすんだ緑にする */
+            color: white;
+            /* 文字の色を白にする */
+            border-radius: 6px;
+            /* 角を6pxだけ丸くする（ふんわりした見た目に） */
+            font-size: 20px;
+            /* 文字の大きさを18pxにする（ちょっと大きめ） */
+            text-align: center;
+            /* 文字を中央に揃える */
+            /* ↑ 中央揃えにしています */
+            text-indent: 20px;
+            /* 最初の行だけ、文字を右に20pxずらす */
+            /* ↑ テキストの先頭をちょっと右にずらしてるよ！ */
+            position: relative;
+            /* 子要素を自由に配置できるようにする準備（位置調整） */
+            overflow: hidden;
+            /* はみ出た中身を隠す（枠から出ないようにする） */
+        }
+
+        .small-text {
+            font-size: 18px;
+            /* 好きなサイズに変更可能 */
+        }
+
+        /* 既存の .datetime-input を活かしつつ横並び */
+        .dt-grid {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .dt-grid .datetime-input {
+            flex: 1 1 50%;
+        }
+
+        @media (max-width: 480px) {
+            .dt-grid {
+                flex-direction: column;
+            }
+        }
+
+        /* 既存の .datetime-input スタイルが効いて同じ見た目になります */
+        .dt-grid {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        @media (max-width: 480px) {
+            .dt-grid {
+                flex-direction: column;
+            }
+        }
+
+        .labelkibounitizi {
+            display: block;
+            margin: 10px 0;
+            /* ← 上下に5px、左右は0 */
+            padding: 3px 0;
+            /* ← 内側の余白は最小限 */
+            font-weight: 400;
+            background-color: #ffffff;
+            color: #1f1f20;
+            border-radius: 0px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 20px;
+            position: relative;
+            overflow: hidden;
+            border-top: 2px solid black;
+            /* 上の線 */
+            border-bottom: 2px solid black;
+            /* 下の線 */
+        }
+
+        /* 基本スタイル */
+        .info-textSyosin {
+            margin: 20px 0;
+            font-family: "Noto Sans JP", "Roboto", sans-serif;
+            font-size: 14px;
+            color: #333;
+            /* 読みやすい濃い文字色 */
+            background-color: #f8f9fa;
+            line-height: 1.8;
+            text-align: left;
+            word-wrap: break-word;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            max-width: 800px;
+            /* 横幅制限 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* 軽い影を追加 */
+            overflow-y: auto;
+            /* 長文スクロール対応 */
+        }
+
+        /* 見出しスタイル */
+        .info-textSyosin h1 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info-textSyosin h2 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        /* 強調テキスト */
+        .info-textSyosin strong {
+            color: #007bff;
+        }
+
+        /* モバイル向け調整 */
+        @media (max-width: 768px) {
+            .info-textSyosin {
+                font-size: 13px;
+                padding: 15px;
+                max-width: 100%;
+            }
+
+            .info-textSyosin h1 {
+                font-size: 16px;
+            }
+
+            .info-textSyosin h2 {
+                font-size: 14px;
+            }
+        }
+
+        .submit-overlay,
+        .final-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .submit-overlay .box,
+        .final-screen .box {
+            max-width: 420px;
+            width: 92%;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 28px 24px;
+        }
+
+        .submit-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #22c55e;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            animation: submitspin 0.9s linear infinite;
+        }
+
+        @keyframes submitspin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .submit-overlay .title {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .submit-overlay .msg {
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .final-screen .title {
+            font-weight: 800;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .final-screen .msg {
+            color: #374151;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .btn-primary,
+        .btn-ghost {
+            appearance: none;
+            border: 0;
+            cursor: pointer;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-ghost {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        /* 全タップ不可（overlay/完了画面は操作可に） */
+        body.locked * {
+            pointer-events: none !important;
+        }
+
+        body.locked .submit-overlay,
+        body.locked .final-screen,
+        body.locked .submit-overlay *,
+        body.locked .final-screen * {
+            pointer-events: auto !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 右側の追従ナビ -->
+    <div class="side-nav" id="sideNav">
+        <a href="#section-message">
+            <span>⇩</span>
+            <i class="fas fa-comment"></i>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>
+        </h1>
+        <!-- 追加するボタン -->
+        <div class="repeat-booking-wrapper">
+            <button type="button" id="repeatBookingButton" onclick="applyPreviousSelection()">
+                🔁 前回と同じメニューで予約する
+            </button>
+        </div>
+
+        <div class="label">氏名<span class="required">必須</span></div>
+        <input type="text" id="name" placeholder="氏名を入力してください" oninput="saveInput('name')">
+
+        <div class="label">氏名（カナ）<span class="required">必須</span></div>
+        <input type="text" id="namehurigana" placeholder="フリガナを入力してください" oninput="saveInput('namehurigana')">
+
+        <div class="label">電話番号<span class="required">必須</span></div>
+        <input type="tel" id="phone" placeholder="電話番号を入力してください" oninput="saveInput('phone')">
+
+        <div class="label">ご予約について<span class="required">必須</span></div>
+        <div class="visit-buttons">
+            <button type="button" id="firstVisit" onclick="selectVisit(this)">初診</button>
+            <button type="button" id="repeatVisit" onclick="selectVisit(this)">2回目以降</button>
+        </div>
+
+        <div class="label">メールアドレス<span class="required">必須</span></div>
+
+        <!-- 実際に送信されるメール値 -->
+        <input type="hidden" id="email" name="email" />
+
+        <!-- メール入力用ラッパー -->
+        <div class="email-input-row">
+            <!-- ローカル部 -->
+            <input type="text" id="emailLocal" inputmode="email" autocomplete="email" spellcheck="false"
+                placeholder="例）taro.yamada" oninput="onEmailLocalInput()" />
+
+            <!-- ドメイン選択 -->
+            <select id="emailDomainSelect" class="domain-select" onchange="onEmailDomainSelectChange()">
+                <option value="" selected>選択</option>
+                <option value="@gmail.com">@gmail.com</option>
+                <option value="@icloud.com">@icloud.com</option>
+                <option value="@outlook.jp">@outlook.jp</option>
+                <option value="@outlook.com">@outlook.com</option>
+                <option value="@hotmail.com">@hotmail.com</option>
+                <option value="@live.jp">@live.jp</option>
+                <option value="@yahoo.co.jp">@yahoo.co.jp</option>
+                <option value="@docomo.ne.jp">@docomo.ne.jp</option>
+                <option value="@ezweb.ne.jp">@ezweb.ne.jp</option>
+                <option value="@au.com">@au.com</option>
+                <option value="@softbank.ne.jp">@softbank.ne.jp</option>
+                <option value="@i.softbank.jp">@i.softbank.jp</option>
+                <option value="@ymobile.ne.jp">@ymobile.ne.jp</option>
+                <option value="@custom">その他（手入力）</option>
+            </select>
+
+            <!-- カスタムドメイン -->
+            <input type="text" id="emailDomainCustom" inputmode="email" autocomplete="email" spellcheck="false"
+                placeholder="例）example.co.jp" oninput="onEmailDomainCustomInput()" style="display:none;" />
+        </div>
+
+        <small id="emailError" style="display:none;color:#d00;">
+            メールアドレスの形式が正しくありません。
+        </small>
+
+        <div class="labelnasihissu" style="margin-top:.175rem;">確認のためもう一度<span class="required">必須</span><br>入力してください
+        </div>
+
+        <div class="email-input-row">
+            <!-- ローカル部（確認） -->
+            <div class="field-wrap">
+                <input type="text" id="emailLocal2" inputmode="email" autocomplete="email" spellcheck="false"
+                    placeholder="例）taro.yamada" oninput="onEmailLocalInput('2')" />
+                <div id="emailLocal2Err" class="popover-error">一致していません</div>
+            </div>
+
+            <!-- ドメイン選択（確認） -->
+            <div class="field-wrap select-narrow">
+                <select id="emailDomainSelect2" class="domain-select" onchange="onEmailDomainSelectChange('2')">
+                    <option value="" selected>選択</option>
+                    <option value="@gmail.com">@gmail.com</option>
+                    <option value="@icloud.com">@icloud.com</option>
+                    <option value="@outlook.jp">@outlook.jp</option>
+                    <option value="@outlook.com">@outlook.com</option>
+                    <option value="@hotmail.com">@hotmail.com</option>
+                    <option value="@live.jp">@live.jp</option>
+                    <option value="@yahoo.co.jp">@yahoo.co.jp</option>
+                    <option value="@docomo.ne.jp">@docomo.ne.jp</option>
+                    <option value="@ezweb.ne.jp">@ezweb.ne.jp</option>
+                    <option value="@au.com">@au.com</option>
+                    <option value="@softbank.ne.jp">@softbank.ne.jp</option>
+                    <option value="@i.softbank.jp">@i.softbank.jp</option>
+                    <option value="@ymobile.ne.jp">@ymobile.ne.jp</option>
+                    <option value="@custom">その他（手入力）</option>
+                </select>
+                <div id="emailDomain2Err" class="popover-error">一致していません</div>
+            </div>
+
+            <!-- カスタムドメイン（確認）：select=その他時のみ表示 -->
+            <div class="field-wrap" id="emailDomainCustom2Wrap" style="display:none;">
+                <input type="text" id="emailDomainCustom2" inputmode="email" autocomplete="email" spellcheck="false"
+                    placeholder="例）example.co.jp" oninput="onEmailDomainCustomInput('2')" />
+                <div id="emailDomainCustom2Err" class="popover-error">一致していません</div>
+            </div>
+        </div>
+
+<div id="treatment-text" style="display: none; margin-bottom: 10px;"></div>
+
+        <div class="label" id="course">メニューをお選びください<span class="required">必須</span></div>
+        <div class="symptoms">
+            <button type="button" onclick="selectSymptom(this, 'treatment3')" data-price="15000">ベビーケア・育児相談</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment1')" data-price="15000">マタニティ整体</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment2')" data-price="15000">産後整体</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment8')" data-price="15000">おっぱいマッサージ</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment4')" data-price="15000">産後ピラティス</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment5')" data-price="15000">母子ケア</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment6')" data-price="15000">ファミリーケア</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment7')" data-price="15000">整体</button>
+        </div>
+
+        <div class="label">希望日時<span class="required">必須</span></div>
+        <div class="info-text">
+            託児が必要ない方は以下の日にちは避けてご予約くださいませ。<br>
+            託児が必要なくても託児料（1100円）を頂戴いたします。<br>
+            スタッフが常駐していない、必要としていない場合でも頂戴いたします。<br>
+            ※詳しくは
+            <a href="https://www.hinatasalon.com/termsofservice" target="_blank"
+                style="color:#0936ff; text-decoration:underline;">
+                利用規約
+            </a>条項の【6】をご確認ください。<br><br>
+            【○月○日】【○月○日】
+        </div>
+        <div class="calendar-container">
+            <!-- 月を独立して配置 -->
+            <div class="current-month-container">
+                <span class="current-month" id="currentMonth">月</span>
+            </div>
+
+            <!-- 月移動ボタンを週移動ボタンの上に配置 -->
+            <div class="month-button-container">
+                <button class="month-button" onclick="previousmonth()">前月</button>
+                <button class="month-button" onclick="nextmonth()">翌月</button>
+            </div>
+
+            <div class="week-button-container">
+                <button class="week-button" onclick="previousWeek()">前週</button>
+                <button class="week-button" onclick="nextWeek()">翌週</button>
+            </div>
+
+            <div id="calendar1" class="calendar">
+                <table>
+                    <thead>
+                        <tr id="calendar-header">
+                            <th>時間</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- カレンダーの内容がここに追加される -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <div class="loading-text">読み込み中...</div>
+            </div>
+        </div>
+
+        <div class="labeltyuuou">
+            <span style="color:red;">初診の方は以下の内容を<br>入力してください。</span>
+        </div>
+        <div class="info-textSyosin">
+            ・必ずホームページの
+            <a href="https://www.hinatasalon.com/termsofservice" target="_blank"
+                style="color:#0936ff; text-decoration:underline;">
+                【利用規約】
+            </a>
+            をお読みください。<br>
+            ・初回は予約時間の10分前にお越しくださいませ。<br>
+            妊婦さんは【分娩予定日】<br>
+            産後整体やピラティスでのご予約の方は【出産日】<br>
+            赤ちゃんでのご予約は【生年月日】<br>
+            それぞれ西暦からご記入ください。<br>
+            ・簡単に【相談内容】と【第何子か】を教えてください。<br>
+            ・当日は、母子手帳と着替えをご持参ください。
+        </div>
+        <textarea id="message" rows="4" placeholder="入力してください"></textarea>
+
+        <div class="label">ご予約内容</div>
+        <div id="displayInfo"></div> <!-- ここに選択された情報を表示します -->
+
+        <button class="submit-button" onclick="submitForm()" div id="section-message">予約を行う</button>
+    </div>
+
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script>
+        let visitCount = '';
+        let selectedMenu = '';
+        let selectedSymptom = [];  // 配列として定義
+        let selectedFullDate = '';
+        let currentDate = new Date();
+        let availabilityCache = {};
+        let optiCount = ''; <!-- 選択された症状を格納する変数 -->
+        let totalAmount = 0; // 合計金額を格納する変数
+        let menuPrice = 0; // メニューの価格
+        let optionsPrice = 0; // オプションの合計価格
+/* ✅ 送信フロー共通ユーティリティ（既存<script>内に追加） */
+let SUBMITTING = false;
+
+function lockAll() {
+  document.body.classList.add('locked');
+  document.querySelectorAll('button, input, select, textarea').forEach(el => {
+    el.setAttribute('data-prev-disabled', el.disabled ? '1' : '0');
+    el.disabled = true;
+  });
+}
+
+function unlockAll() {
+  document.body.classList.remove('locked');
+  document.querySelectorAll('button, input, select, textarea').forEach(el => {
+    const prev = el.getAttribute('data-prev-disabled');
+    if (prev === '0') el.disabled = false;
+    el.removeAttribute('data-prev-disabled');
+  });
+}
+
+function showSubmitOverlay(text = 'しばらくお待ちください。') {
+  const ov = document.getElementById('submitOverlay');
+  ov.querySelector('.msg').textContent = text;
+  ov.style.display = 'flex';
+}
+
+function hideSubmitOverlay() {
+  const ov = document.getElementById('submitOverlay');
+  ov.style.display = 'none';
+}
+
+function showFinalScreen() {
+  const fs = document.getElementById('finalScreen');
+  fs.style.display = 'flex';
+  // 完了後はずっとロック
+  document.body.classList.add('locked');
+}
+
+// 予約内容の要点をコピー（任意）
+function copySummaryForUser() {
+  const text = (document.getElementById('displayInfo')?.innerText || '').trim();
+  if (!text) return alert('コピーできる内容が見つかりませんでした。');
+  navigator.clipboard?.writeText(text).then(
+    () => alert('内容をコピーしました。'),
+    () => alert('コピーに失敗しました。')
+  );
+}
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            liff.init({
+                liffId: '2005254357-zKma9BZk'
+            }).then(() => {
+                console.log('LIFF初期化成功');
+            }).catch((err) => {
+                console.log('LIFF初期化失敗', err);
+            });
+
+            fetchAvailability(currentDate);
+        });
+
+        // 訪問回数ごとの時間設定 (例：初めて=20分、2回目以降=15分)
+        let visitTimes = {
+            '1回目〈30分〉': 30,
+            '2回目以降〈0分〉': 0
+        };
+
+        let selectedVisitTime = 0; // 訪問回数で選択された時間
+
+        // 訪問回数ごとの時間設定 (例：初めて=20分、2回目以降=15分)
+        let optiTimes = {
+            '眉カット〈30分〉': 30,
+            '襟足〈30分〉': 30,
+            '背中(キャミソールライン)〈30分〉': 30,
+            '背中(腰まで)〈30分〉': 30,
+            'デコルテ〈30分〉': 30,
+            '腕〈30分〉': 30,
+            '保湿パック〈30分〉': 30,
+            'ベーシックマッサージ〈30分〉': 30,
+            'リラックスマッサージ〈30分〉': 30,
+            '美白パック〈30分〉': 30
+        };
+
+        let selectedoptiTime = 0; // 訪問回数で選択された時間
+
+        let menuTimes = {
+            '和装プラン〈30分〉': 30,
+            '洋装プランA〈60分〉': 60,
+            '洋装プランB〈120分〉': 120,
+            '洋装プランC〈30分〉': 30,
+            'リラックスコース〈60分〉': 60,
+            'ベーシックコース〈30分〉': 30,
+            'スピードコース〈90分〉': 90
+        };
+
+        let selectedMenuTime = 0;
+
+        // 入力内容をローカルストレージに保存
+        function saveInput(id) {
+            const value = document.getElementById(id).value;
+            localStorage.setItem(id, value);
+        }
+
+        // ページが読み込まれたときに前回の入力内容を復元
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedName = localStorage.getItem('name');
+            const savednamehurigana = localStorage.getItem('namehurigana');
+            const savedPhone = localStorage.getItem('phone');
+            const savedEmail = localStorage.getItem('email');
+
+            if (savedName) document.getElementById('name').value = savedName;
+            if (savednamehurigana) document.getElementById('namehurigana').value = savednamehurigana;
+            if (savedPhone) document.getElementById('phone').value = savedPhone;
+            if (savedEmail) document.getElementById('email').value = savedEmail;
+        });
+
+        // スムーズスクロール
+        document.querySelectorAll('.side-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 選択したメニューを保存
+        function saveMenuSelection(menuType) {
+            localStorage.setItem('selectedMenu', menuType);
+        }
+
+        // メニューを選択したときにローカルストレージに保存
+        function showMenu(menuType) {
+            document.querySelectorAll('.menu-section').forEach(section => section.style.display = 'none');
+            document.getElementById(menuType).style.display = 'block';
+            saveMenuSelection(menuType);
+        }
+
+function applyPreviousSelection() {
+    const savedMenu     = localStorage.getItem('selectedMenu') || '';
+    const savedSymptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
+    const savedopti     = JSON.parse(localStorage.getItem('selectedopti') || '[]');
+
+    // 何も保存されていない場合
+    if (!savedMenu && savedSymptoms.length === 0 && savedopti.length === 0) {
+        alert('前回のご予約内容が確認できませんでした。お手数ですが、通常の手順でご予約を進めてください。※前回と同じブラウザからアクセスいただくと、正しく表示される場合があります。');
+        return;
+    }
+
+    // ✅ ご来店回数（2回目以降）を自動で選択
+    const repeatVisitButton = document.getElementById('repeatVisit');
+    if (repeatVisitButton) {
+        selectVisit(repeatVisitButton);
+    }
+
+    // ✅ いったんメニュー・オプションの選択状態をすべて解除
+    document.querySelectorAll('.symptoms button.active').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelectorAll('.opti button.active').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // ✅ 旧レイアウト用のメニューセクションが存在する場合のみ表示（存在しなければ何もしない）
+    if (savedMenu && document.getElementById(savedMenu)) {
+        showMenu(savedMenu);
+    }
+
+    // ✅ メニュー再選択
+    //    → .symptoms 内のボタンすべてを見て、onclick の 'treatmentX' を取り出し、
+    //       localStorage に保存されている ID と一致したら click() する
+    document.querySelectorAll('.symptoms button').forEach(btn => {
+        const onclick = btn.getAttribute('onclick') || '';
+        // 例: "selectSymptom(this, 'treatment3')" から treatment3 を抜き出す
+        const match = onclick.match(/'([^']+)'/);
+        const treatmentId = match ? match[1] : null;
+
+        if (treatmentId && savedSymptoms.includes(treatmentId)) {
+            btn.click(); // ← selectSymptom が呼ばれ、active クラスや金額など内部状態も復元される
+        }
+    });
+
+    // ✅ オプション再選択
+    savedopti.forEach(irradiationId => {
+        const irradiationButton = document.getElementById(irradiationId);
+        if (irradiationButton && !irradiationButton.classList.contains('active')) {
+            irradiationButton.click();
+        }
+    });
+
+    // ✅ カレンダーへスクロール
+    const targetElement = document.getElementById('calendar1');
+    if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ✅ 最後に予約内容表示を更新
+    if (typeof updateDisplayInfo === 'function') {
+        updateDisplayInfo();
+    }
+}
+
+        // 共通：メール欄の値を保存（suffixは '' または '2'）
+        function saveEmailPartsToStorage(suffix = '') {
+            const localEl = document.getElementById('emailLocal' + suffix);
+            const selEl = document.getElementById('emailDomainSelect' + suffix);
+            const cusEl = document.getElementById('emailDomainCustom' + suffix);
+
+            localStorage.setItem('emailLocal' + suffix, localEl ? localEl.value : '');
+            localStorage.setItem('emailDomainSelect' + suffix, selEl ? selEl.value : '');
+            localStorage.setItem('emailDomainCustom' + suffix, cusEl ? cusEl.value : '');
+        }
+
+        // 共通：メール欄の値を復元（表示制御も含む）
+        function restoreEmailPartsFromStorage(suffix = '') {
+            const localSaved = localStorage.getItem('emailLocal' + suffix) || '';
+            const selSaved = localStorage.getItem('emailDomainSelect' + suffix) || '';
+            const cusSaved = localStorage.getItem('emailDomainCustom' + suffix) || '';
+
+            const localEl = document.getElementById('emailLocal' + suffix);
+            const selEl = document.getElementById('emailDomainSelect' + suffix);
+            const cusEl = document.getElementById('emailDomainCustom' + suffix);
+
+            // 2組目のみ：カスタム入力のラッパ（存在すれば使う）
+            const customWrap = document.getElementById('emailDomainCustom' + suffix + 'Wrap');
+
+            if (localEl && localSaved) localEl.value = localSaved;
+            if (selEl && selSaved) selEl.value = selSaved;
+
+            const isCustom = (selSaved === '@custom' || selSaved === 'custom');
+            if (cusEl) {
+                if (customWrap) {
+                    // 2組目はラッパの表示/非表示を切り替え
+                    customWrap.style.display = isCustom ? '' : 'none';
+                } else {
+                    // 1組目はinput自体を表示/非表示
+                    cusEl.style.display = isCustom ? '' : 'none';
+                }
+                cusEl.value = isCustom ? (cusSaved || '') : '';
+            }
+
+            // 復元後に同期・注意喚起・照合
+            if (suffix === '' && typeof syncEmailHidden === 'function') {
+                // 隠しemailは1組目から組み立てるため、1組目復元時のみ同期
+                syncEmailHidden();
+                if (typeof maybeShowCarrierNotice === 'function') maybeShowCarrierNotice();
+            }
+            if (typeof validateEmailConfirmationParts === 'function') validateEmailConfirmationParts();
+        }
+
+        // 初期化：ページ読込時に両方を復元
+        document.addEventListener('DOMContentLoaded', function () {
+            restoreEmailPartsFromStorage('');  // 1組目
+            restoreEmailPartsFromStorage('2'); // 2組目
+        });
+
+        // 既存ハンドラをラップして両組とも保存する
+        const _orig_onEmailLocalInput = onEmailLocalInput;
+        onEmailLocalInput = function (suffix = '') {
+            if (typeof _orig_onEmailLocalInput === 'function') _orig_onEmailLocalInput(suffix);
+            saveEmailPartsToStorage(suffix); // '' でも '2' でも保存
+        };
+
+        const _orig_onEmailDomainSelectChange = onEmailDomainSelectChange;
+        onEmailDomainSelectChange = function (suffix = '') {
+            if (typeof _orig_onEmailDomainSelectChange === 'function') _orig_onEmailDomainSelectChange(suffix);
+            saveEmailPartsToStorage(suffix);
+        };
+
+        const _orig_onEmailDomainCustomInput = onEmailDomainCustomInput;
+        onEmailDomainCustomInput = function (suffix = '') {
+            if (typeof _orig_onEmailDomainCustomInput === 'function') _orig_onEmailDomainCustomInput(suffix);
+            saveEmailPartsToStorage(suffix);
+        };
+
+        function updateDisplayInfo() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const labelStyle = "color:#0c0c0c; font-size:14px; border:1px solid #0c0c0c; padding:0px 3px; border-radius:4px;";
+
+            const visitCountText = visitCount
+                ? `<span style="${labelStyle}"><strong>来店回数</strong></span> ${visitCount}`
+                : '・来店回数が未選択です';
+
+            const selectedMenuText = selectedMenu
+                ? `<span style="${labelStyle}"><strong>コース</strong></span> ${selectedMenu}`
+                : '・コースが未選択です';
+
+            const selectedSymptomText = selectedSymptom.length > 0
+                ? `<span style="${labelStyle}"><strong>メニュー</strong></span><br>・${selectedSymptom.join('<br>')}`
+                : '・メニューが未選択です';
+
+            const optiText = optiCount
+                ? `<span style="${labelStyle}"><strong>オプション</strong></span><br>・${optiCount.split(', ').join('<br>・')}`
+                : '・オプション無し';
+
+            let totalMinutes = selectedMenuTime + selectedoptiTime + selectedVisitTime;
+            let hours = Math.floor(totalMinutes / 60);
+            let minutes = totalMinutes % 60;
+            let totalTimeText = `<span style="${labelStyle}"><strong>所要時間</strong></span> ${hours > 0 ? hours + '時間' : ''}${minutes}分`;
+
+            const totalAmountText = `<span style="${labelStyle}"><strong>合計金額</strong></span> ¥${menuPrice + optionsPrice}`;
+
+            const selectedDateText = selectedFullDate
+                ? `<span style="${labelStyle}"><strong>希望日時</strong></span> ${selectedFullDate}`
+                : '・日時が未選択です';
+
+            // 修正ボタン付きのHTMLを作成
+            document.getElementById('displayInfo').innerHTML = `
+        <div class="info-row">
+            <p><span style="${labelStyle}"><strong>お名前</strong></span> ${name}</p>
+            <button class="edit-button" onclick="scrollToElement('name')">修正</button>
+        </div>
+        <hr>
+        <div class="info-row">
+            <p><span style="${labelStyle}"><strong>電話番号</strong></span> ${phone}</p>
+            <button class="edit-button" onclick="scrollToElement('phone')">修正</button>
+        </div>
+        <hr>
+        <div class="info-row">
+            <p><span style="${labelStyle}"><strong>メール</strong></span> ${email}</p>
+            <button class="edit-button" onclick="scrollToElement('email')">修正</button>
+        </div>
+        <hr>
+        <div class="info-row">
+            <p>${visitCountText}</p>
+            <button class="edit-button" onclick="scrollToElement('firstVisit')">修正</button>
+        </div>
+        <hr>
+        <div class="info-row">
+            <p>${selectedSymptomText}</p>
+            <button class="edit-button" onclick="scrollToElement('male'); scrollToElement('female'); scrollToElement('whitening');">修正</button>
+        </div>
+        <hr>
+        <div class="info-row">
+            <p>${selectedDateText}</p>
+            <button class="edit-button" onclick="scrollToElement('calendar1')">修正</button>
+        </div>
+        <hr>
+    `;
+        }
+
+        // スクロール関数
+        function scrollToElement(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // 各ボタンや入力フィールドでupdateDisplayInfoを呼び出すようにする
+        document.getElementById('name').addEventListener('input', updateDisplayInfo);
+        document.querySelectorAll('.visit-buttons button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.querySelectorAll('.menu-sections button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.querySelectorAll('.symptoms button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.querySelectorAll('.opti button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+
+        document.querySelectorAll('.symptoms button').forEach(button => {
+            button.addEventListener('click', () => {
+                const calendarContainer = document.querySelector('.calendar-container');
+
+                // 選択されたメニューがあればカレンダーを表示
+                if (document.querySelectorAll('.symptoms button.active').length > 0) {
+                    calendarContainer.style.display = 'block';
+                } else {
+                    // 選択が解除された場合、カレンダーを非表示
+                    calendarContainer.style.display = 'none';
+                }
+            });
+        });
+
+        // 初期状態でカレンダーを非表示にする
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.calendar-container').style.display = 'none';
+        });
+
+        // 日付セルのクリックイベントで希望日時を更新
+        document.querySelectorAll('.calendar td').forEach(cell => {
+            cell.addEventListener('click', () => {
+                selectDate(cell);
+                updateDisplayInfo();  // 日付を選択したら即座に表示を更新
+            });
+        });
+
+        // --- 利便関数（既出なら流用OK） ---
+        function toHalfWidth(str) {
+            if (!str) return '';
+            return str.replace(/[！-～]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+                .replace(/\u3000/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+        function normalizeEmail(raw) {
+            const s = toHalfWidth((raw || '').trim());
+            // ドメインは小文字に寄せる（慣例）
+            const idx = s.indexOf('@');
+            if (idx < 0) return s;
+            return s.slice(0, idx) + '@' + s.slice(idx + 1).toLowerCase();
+        }
+
+        // 実務向けに厳格なチェック
+        function isValidEmailStrict(raw) {
+            const email = (raw || '').trim();
+            if (email.length === 0 || email.length > 254) return false;
+            const atCount = (email.match(/@/g) || []).length;
+            if (atCount !== 1) return false;
+
+            const [local, domain] = email.split('@');
+            if (!local || !domain) return false;
+
+            if (local.length === 0 || local.length > 64) return false;
+            if (local.startsWith('.') || local.endsWith('.')) return false;
+            if (local.includes('..')) return false;
+            const localAtoms = local.split('.');
+            const localAtomRe = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+$/;
+            if (!localAtoms.every(a => a.length > 0 && localAtomRe.test(a))) return false;
+
+            if (domain.length === 0 || domain.length > 253) return false;
+            if (domain.startsWith('.') || domain.endsWith('.')) return false;
+            if (domain.includes('..')) return false;
+            const labels = domain.split('.');
+            const labelRe = /^[A-Za-z0-9-]{1,63}$/;
+            for (const label of labels) {
+                if (!labelRe.test(label)) return false;
+                if (label.startsWith('-') || label.endsWith('-')) return false;
+            }
+            const tld = labels[labels.length - 1];
+            const tldOk = /^([A-Za-z]{2,24}|xn--[A-Za-z0-9-]{2,59})$/.test(tld);
+            if (!tldOk) return false;
+
+            if (!/^[\x00-\x7F]+$/.test(email)) return false; // 非ASCII混入を拒否
+            if (email.endsWith('.')) return false;
+
+            return true;
+        }
+
+        // ▼ 末尾サフィックス（'' or '2'）付きで各入力セットを扱うユーティリティ
+        function getSelectedDomain(selectEl, customEl) {
+            const sel = (selectEl?.value || '').trim();
+            // 「その他（手入力）」の値は @custom or custom どちらでも対応
+            if (sel === '@custom' || sel === 'custom') {
+                const raw = (customEl?.value || '');
+                return toHalfWidth(raw).toLowerCase();
+            }
+            if (!sel) return '';
+            // 先頭に @ が付いているプリセットは自動で外す
+            const cleaned = sel.startsWith('@') ? sel.slice(1) : sel;
+            return toHalfWidth(cleaned).toLowerCase();
+        }
+
+        // ▼ サフィックス指定でメール文字列を組み立て
+        function buildEmailFromParts(suffix = '') {
+            const localRaw = document.getElementById('emailLocal' + suffix)?.value || '';
+            const selectEl = document.getElementById('emailDomainSelect' + suffix);
+            const customEl = document.getElementById('emailDomainCustom' + suffix);
+
+            const local = toHalfWidth(localRaw);
+            const domain = getSelectedDomain(selectEl, customEl);
+
+            if (!local || !domain) return ''; // どちらか未入力なら未完成扱い
+            return `${local}@${domain}`;
+        }
+
+        // ▼ 隠しフィールド（本体）へ同期（1組目のみ）
+        function syncEmailHidden() {
+            const email = normalizeEmail(buildEmailFromParts(''));
+            const hidden = document.getElementById('email');
+            if (hidden) hidden.value = email;
+
+            // 軽いリアルタイム検証（1組目だけ）
+            const err = document.getElementById('emailError');
+            if (email && !isValidEmailStrict(email)) {
+                err.style.display = '';
+            } else {
+                err.style.display = 'none';
+            }
+        }
+
+        function onEmailLocalInput(suffix = '') {
+            if (suffix === '') {
+                syncEmailHidden();
+                maybeShowCarrierNotice();
+            }
+            // ★ 2組目リアルタイム照合（1組目が動いても更新したいので常に呼ぶ）
+            validateEmailConfirmationParts();
+        }
+
+        function onEmailDomainSelectChange(suffix = '') {
+            const sel = document.getElementById('emailDomainSelect' + suffix)?.value || '';
+            const custom = document.getElementById('emailDomainCustom' + suffix);
+            if (custom) {
+                const isCustom = (sel === '@custom' || sel === 'custom');
+                custom.style.display = isCustom ? '' : 'none';
+                if (!isCustom) custom.value = '';
+            }
+            if (suffix === '') {
+                syncEmailHidden();
+                maybeShowCarrierNotice();
+            }
+            // ★ 2組目リアルタイム照合
+            validateEmailConfirmationParts();
+        }
+
+        function onEmailDomainCustomInput(suffix = '') {
+            if (suffix === '') {
+                syncEmailHidden();
+            }
+            // ★ 2組目リアルタイム照合
+            validateEmailConfirmationParts();
+        }
+
+        // ▼ 任意：キャリアメール注意喚起（既存のまま）
+        function maybeShowCarrierNotice() {
+            const email = document.getElementById('email')?.value || '';
+            const bannerId = 'carrierNotice';
+            let banner = document.getElementById(bannerId);
+
+            // 対象: キャリアメール判定
+            const carrierRe = /@(docomo\.ne\.jp|ezweb\.ne\.jp|au\.com|softbank\.ne\.jp|i\.softbank\.jp|ymobile\.ne\.jp)$/i;
+            const isCarrier = carrierRe.test(email);
+
+            // 「1組目のメール入力行（.email-input-row）」の直後に挿入したい
+            const firstRow = document.getElementById('emailDomainSelect')?.closest('.email-input-row');
+
+            if (isCarrier) {
+                // バナー未生成なら作成
+                if (!banner) {
+                    banner = document.createElement('div');
+                    banner.id = bannerId;
+                    banner.style.cssText = 'margin-top:.5rem;color:#b35b00;font-size:.9em;line-height:1.6;';
+                    banner.textContent =
+                        'キャリアメールは迷惑メール設定によりメールが届かない場合があります。受信設定のご確認、または可能であればGmail等のアドレスをご利用ください。';
+                }
+
+                // 目的の位置（1組目の行の直後）へ差し込む／移動する
+                if (firstRow && banner.previousElementSibling !== firstRow) {
+                    firstRow.insertAdjacentElement('afterend', banner);
+                } else if (!firstRow && !banner.isConnected) {
+                    // 念のためフォールバック：親が取れない場合は select の親に追加
+                    const fallbackParent = document.getElementById('emailDomainSelect')?.parentElement;
+                    fallbackParent?.appendChild(banner);
+                }
+            } else if (banner) {
+                banner.remove();
+            }
+        }
+
+        function showError(el, popoverEl) {
+            if (!el || !popoverEl) return;
+            el.classList.add('input-error');
+            popoverEl.style.display = '';
+        }
+        function hideError(el, popoverEl) {
+            if (!el || !popoverEl) return;
+            el.classList.remove('input-error');
+            popoverEl.style.display = 'none';
+        }
+
+        // 2組目の入力が変わるたびに呼ぶ（1組目が変わった時にも呼ぶと表示が即時更新され便利）
+        function validateEmailConfirmationParts() {
+            // ローカル部比較
+            const local1 = toHalfWidth(document.getElementById('emailLocal')?.value || '');
+            const local2Input = document.getElementById('emailLocal2');
+            const local2 = toHalfWidth(local2Input?.value || '');
+            const localErr = document.getElementById('emailLocal2Err');
+
+            if (local2 && local1 && local1 !== local2) {
+                showError(local2Input, localErr);
+            } else {
+                hideError(local2Input, localErr);
+            }
+
+            // ドメイン比較（custom/select どちらが可視かで対象切替）
+            const sel1 = document.getElementById('emailDomainSelect');
+            const cus1 = document.getElementById('emailDomainCustom');
+            const domain1 = getSelectedDomain(sel1, cus1); // 正規化済（@を外してlower）
+
+            const sel2 = document.getElementById('emailDomainSelect2');
+            const cus2 = document.getElementById('emailDomainCustom2');
+            const custom2Shown = cus2 && cus2.parentElement && cus2.parentElement.style.display !== 'none';
+            const domain2 = getSelectedDomain(sel2, cus2);
+
+            const sel2Err = document.getElementById('emailDomain2Err');
+            const cus2Err = document.getElementById('emailDomainCustom2Err');
+
+            // まず全部消す
+            hideError(sel2, sel2Err);
+            hideError(cus2, cus2Err);
+
+            // 値が両方あり、かつ不一致なら該当フィールドを赤に
+            if (domain2 && domain1 && domain1 !== domain2) {
+                if (custom2Shown) {
+                    showError(cus2, cus2Err);
+                } else {
+                    showError(sel2, sel2Err);
+                }
+            }
+        }
+
+        // 追加：カスタムドメイン欄の表示/非表示をラッパーごと切り替える共通関数
+        function toggleEmailCustomVisibility(suffix = '') {
+            const selVal = document.getElementById('emailDomainSelect' + suffix)?.value || '';
+            const isCustom = (selVal === '@custom' || selVal === 'custom');
+
+            const customInput = document.getElementById('emailDomainCustom' + suffix);
+            const customWrap = document.getElementById('emailDomainCustom' + suffix + 'Wrap'); // 2組目のみ存在
+
+            if (customWrap) {
+                // 確認用（2組目）はラッパーを開閉
+                customWrap.style.display = isCustom ? '' : 'none';
+                if (customInput && !isCustom) customInput.value = '';
+            } else if (customInput) {
+                // 1組目は input 自体を開閉
+                customInput.style.display = isCustom ? '' : 'none';
+                if (!isCustom) customInput.value = '';
+            }
+        }
+
+        // 置き換え：既存ハンドラを包んで、表示切替も行う
+        const __orig_onEmailDomainSelectChange = onEmailDomainSelectChange;
+        onEmailDomainSelectChange = function (suffix = '') {
+            if (typeof __orig_onEmailDomainSelectChange === 'function') {
+                __orig_onEmailDomainSelectChange(suffix);
+            }
+            // ★ ラッパーごと正しくトグル
+            toggleEmailCustomVisibility(suffix);
+
+            // 既存処理（隠し値同期や注意喚起/照合）はそのまま
+            if (suffix === '') {
+                if (typeof syncEmailHidden === 'function') syncEmailHidden();
+                if (typeof maybeShowCarrierNotice === 'function') maybeShowCarrierNotice();
+            }
+            if (typeof validateEmailConfirmationParts === 'function') {
+                validateEmailConfirmationParts();
+            }
+            // 保存
+            if (typeof saveEmailPartsToStorage === 'function') saveEmailPartsToStorage(suffix);
+        };
+
+        // 初期表示時にも状態を反映しておくと安心
+        document.addEventListener('DOMContentLoaded', function () {
+            toggleEmailCustomVisibility('');
+            toggleEmailCustomVisibility('2');
+        });
+
+        function selectSymptom(button, treatmentId) {
+            // 選択された日時をリセット
+            selectedFullDate = '';
+
+            // ボタンの選択状態を切り替える
+            button.classList.toggle('active');
+
+            // ローカルストレージに保存する配列を取得
+            let selectedSymptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
+
+            // 選択した症状をローカルストレージに保存（1つだけ保持）
+            selectedSymptoms = [treatmentId];
+            localStorage.setItem('selectedSymptoms', JSON.stringify(selectedSymptoms));
+
+            // 選択されたオプションを取得
+            const updatedSelectedButtons = document.querySelectorAll('.symptoms button.active');
+            const treatmentText = document.getElementById('treatment-text');
+
+            if (updatedSelectedButtons.length === 0) {
+                // すべてのボタンの選択が解除された場合、メニュー時間を0にリセット
+                selectedMenuTime = 0;
+                selectedSymptom = null; // 選択されたメニューをリセット
+                menuPrice = 0; // メニュー価格をリセット
+                treatmentText.style.display = 'none';
+                return; // ここで処理を終了
+            } else {
+                // 1つだけ選択状態にする
+                if (updatedSelectedButtons.length > 1) {
+                    updatedSelectedButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active'); // クリックしたボタンだけを選択
+                }
+
+                // 選択されたメニューの時間を取得して保存
+                const selectedMenu = button.textContent;
+                selectedMenuTime = menuTimes[selectedMenu] || 0; // メニュー時間を取得して保存
+                selectedSymptom = [selectedMenu]; // 選択されたメニュー名を配列として保存
+                menuPrice = parseInt(button.getAttribute('data-price'), 10) || 0;  // メニューの価格を取得
+            }
+
+            console.log('選択されたメニューの時間:', selectedMenuTime);
+
+            // カレンダーを更新するために取得する日付を渡す
+            fetchAvailability(currentDate);
+
+            function createTreatmentContent(title, imageUrl, description, price, basic, time) {
+                const hasTitle = !!(title && title.trim());
+                const hasImage = !!(imageUrl && imageUrl.trim());
+                const hasDesc = !!(description && description.trim());
+                const hasPrice = !!(price && price.trim());
+                const hasBasic = !!(basic && basic.trim());
+                const hasTime = !!(time && time.trim());
+
+                const titleContent = hasTitle ? `<div class="treatment-title">${title}</div>` : '';
+                const imageContent = hasImage ? `
+      <div class="treatment-image">
+        <div class="spinner-overlay"><div class="spinner"></div></div>
+        <img src="${imageUrl}" alt="${hasTitle ? title : 'treatment image'}"
+             onload="this.style.display='block'; this.previousElementSibling.style.display='none';">
+      </div>` : '';
+                const descContent = hasDesc ? `<div class="treatment-description">${description}</div>` : '';
+                const timeContent = hasTime ? `<span>所要時間：</span><strong>${time}</strong><br>` : '';
+
+                const priceContent = hasPrice
+                    ? `<div class="treatment-price"><span>価格：</span>${price}</div>`
+                    : '';
+
+                const basicContent = hasBasic
+                    ? `<div class="treatment-basic"><span></span><strong>${basic}</strong></div>`
+                    : '';
+
+                // 出力順序を制御（タイトル→画像→詳細→料金→基本料金）
+                const inner = `${titleContent}${imageContent}${descContent}${priceContent}${basicContent}${timeContent}`.trim();
+                return inner ? `<div class="treatment-container">${inner}</div>` : '';
+            }
+
+            // 呼び出し例（treatmentIdやボタンの条件が揃っている前提）
+            if (treatmentId === 'treatment1') {
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    '',
+                    'マタニティ整体はお腹の赤ちゃんの心音を確認し、赤ちゃんが元気であることを施術の前後で確認します。<br>胎児の心音の確認をするマタニティ整体は助産院ならではです。<br>安心してご予約下さいませ。<br>整体は痛みを伴わない手技により心地よい時間をお過ごしいただけます。<br>お腹クッションもございますので、楽な姿勢で受けられます。<br><br>ベルトの装着方法や生活のアドバイス、家でできる軽い体操なども指導いたします。<br>病院ではなかなか聞けないお産の相談もお気軽にどうぞ。',
+                    '初回：初診料 2,600円<br>半年以上あくと：再診料 1,100円<br>1年以上あくと：再診料 2,200円',
+                    '基本料金：￥9,360',
+                    ''
+                );
+            } else if (treatmentId === 'treatment2') {
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    '',
+                    '出産後の骨盤は崩壊状態です。<br>早めのケアをお勧めします。<br>全身の調整をいたします。<br>産後何年経過していてもケアいたします。<br><br>産後の体型戻し、出産・育児に伴う腰痛、肩こり、腱鞘炎などにも対応しています。<br>自分へのご褒美にもいかがでしょうか？',
+                    '初回：初診料 2,600円<br>半年以上あくと：再診料 1,100円<br>1年以上あくと：再診料 2,200円',
+                    '基本料金：￥9,360',
+                    ''
+                );
+            } else if (treatmentId === 'treatment3') {
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    '',
+                    '赤ちゃんのことならお任せください。<br>向き癖、頭の形、反り返り、寝ないなどの相談、寝返りやずりばい、ハイハイがオリジナルで改善方法を知りたい、抱っこの仕方やスリング、おんぶ紐の使い方、授乳に関することまで幅広くお応えいたします。<br>ベビーケアでは、赤ちゃんの体をほぐしたり、遊び方や発達、おもちゃのこともご指導します。<br><br>ベビーケアの対象年齢は、新生児から小学校卒業まで！<br>歩き方や走り方などの運動面で気になること、脚の形や姿勢の問題、噛み合わせ（不正咬合）まで幅広くご相談いただけます。<br>発達障害児のからだのケアも受け付けています。',
+                    '初回：初診料 2,600円<br>半年以上あくと：再診料 1,100円<br>1年以上あくと：再診料 2,200円',
+                    '基本料金：￥9,360',
+                    ''
+                );
+            } else if (treatmentId === 'treatment4') {
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    '',
+                    '助産師が指導する産後ピラティスです。<br>産後の体型戻し、育児疲れの解消に身体を動かしませんか？<br>マットピラティスで軽いエクササイズから始めていきます。',
+                    '初回：初診料 2,600円<br>半年以上あくと：再診料 1,100円<br>1年以上あくと：再診料 2,200円',
+                    '基本料金：￥6,240',
+                    ''
+                );
+            } else if (treatmentId === 'treatment5') {
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    '',
+                    '産後のお母さんの体のメンテナンスと赤ちゃんのケアを両方取り入れたプランです。<br>料金が少しお安くなっています。',
+                    '初回：初診料 2,600円<br>半年以上あくと：再診料 1,100円<br>1年以上あくと：再診料 2,200円',
+                    '基本料金：￥18,400',
+                    ''
+                );
+            } else if (treatmentId === 'treatment6') {
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    '',
+                    '3人分の施術枠です。<br>産後整体と双子ちゃんケア、またはきょうだいのケア<br>など、大人と子ども2人の3人の施術でのご予約はこちらをご利用ください。<br>初回のみ初診料としてひとり2600円を頂戴いたします。<br>※お子様のケアにご夫婦で同席されるだけの場合にはベビーケアでご予約ください。<br><br>施術枠人数：3人分（例：大人1名＋子ども2名 など）',
+                    '初回：初診料 2,600円 × 人数分<br>半年以上あくと：再診料 1,100円 × 人数分<br>1年以上あくと：再診料 2,200円 × 人数分',
+                    '基本料金：￥27,560',
+                    ''
+                );
+            } else if (treatmentId === 'treatment7') {
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    '',
+                    '妊娠、産後に該当しない女性はこちらからご予約ください。<br>妊娠をご希望の女性もぜひ、ご予約くださいませ。<br><br>中学生や高校生の施術もこちらからどうぞ。',
+                    '初回：初診料 2,600円<br>半年以上あくと：再診料 1,100円<br>1年以上あくと：再診料 2,200円',
+                    '基本料金：￥9,360',
+                    ''
+                );
+            } else if (treatmentId === 'treatment8') {
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    '',
+                    'おっぱいが硬くなる、つまる。<br>乳腺炎になってしまった。<br>赤ちゃんが上手に飲めない。<br>卒乳ケアにもご利用ください。<br><br>おっぱいの状態をより長く良い状態にキープするため、〔整体〕と〔リンパドレナージ〕と〔おっぱいマッサージ〕を併用したオリジナルのケアです。<br>〔おっぱいマッサージ〕は痛くないと好評です。<br><br>しっかり食べる食事指導とアフターケア、赤ちゃんのことまで対応いたします。',
+                    '初回：初診料 2,600円<br>半年以上あくと：再診料 1,100円<br>1年以上あくと：再診料 2,200円',
+                    '基本料金：￥9,360',
+                    ''
+                );
+            } else {
+                treatmentText.innerHTML = '';
+            }
+
+            // `treatment-text` を選択されたボタンの直後に移動
+            button.parentNode.insertBefore(treatmentText, button.nextSibling);
+
+            // トリートメントテキストを表示
+            treatmentText.style.display = 'block';
+
+            // 選択されたメニューの名前と価格を取得
+            const symptomName = button.textContent;  // ボタンのテキストを取得
+            selectedSymptom = [symptomName];  // 選択されたメニュー名を配列として保存
+            menuPrice = parseInt(button.getAttribute('data-price'), 10) || 0;  // メニューの価格を取得
+
+            // 表示を更新
+            updateDisplayInfo();
+        }
+
+        function selectopti(button) {
+            selectedFullDate = '';
+
+            // トグル
+            button.classList.toggle('active');
+
+            // ✅ 現在アクティブなオプションボタンのみを取得し保存（過去データ無視）
+            const selectedButtons = document.querySelectorAll('.opti button.active');
+            const selectedopti = Array.from(selectedButtons).map(btn => btn.id);
+            localStorage.setItem('selectedopti', JSON.stringify(selectedopti));
+
+            // 表示用データ生成
+            const selectedoptiNames = Array.from(selectedButtons).map(btn => btn.innerText);
+            optiCount = selectedoptiNames.join(', ');
+
+            // 合計金額など更新
+            optionsPrice = 0;
+            let totaloptiTime = 0;
+            selectedButtons.forEach(btn => {
+                const price = parseInt(btn.getAttribute('data-price'), 10);
+                optionsPrice += price;
+
+                const irradiationName = btn.innerText;
+                const irradiationTime = optiTimes[irradiationName] || 0;
+                totaloptiTime += irradiationTime;
+            });
+
+            selectedoptiTime = totaloptiTime;
+
+            fetchAvailability(currentDate);
+            updateDisplayInfo();
+        }
+
+        function updateTotalAmount() {
+            totalAmount = menuPrice + optionsPrice; // オプションの価格も含める
+            updateDisplayInfo(); // 表示を更新
+        }
+
+        function selectVisit(element) {
+            // 選択された日時をリセット
+            selectedFullDate = '';
+
+            document.getElementById('firstVisit').classList.remove('active');
+            document.getElementById('repeatVisit').classList.remove('active');
+            element.classList.add('active');
+            visitCount = element.innerText;
+
+            // 選択された訪問回数に対応する時間を取得
+            selectedVisitTime = visitTimes[visitCount];
+
+            console.log('選択された訪問回数の時間:', selectedVisitTime);
+
+            // カレンダーを更新するために取得する日付を渡す
+            fetchAvailability(currentDate);
+        }
+
+        // メニューの選択を保存する関数
+        function selectMenu(element) {
+            element.classList.toggle('selected');
+
+            let selectedMenus = JSON.parse(localStorage.getItem('selectedMenus') || '[]');
+            const menuId = element.id;
+
+            if (element.classList.contains('selected')) {
+                selectedMenus.push(menuId);
+            } else {
+                selectedMenus = selectedMenus.filter(id => id !== menuId);
+            }
+
+            localStorage.setItem('selectedMenus', JSON.stringify(selectedMenus));
+        }
+
+        function showMenu(menu) {
+            // treatment-text を非表示にする
+            document.getElementById("treatment-text").style.display = "none";
+
+            // 選択されたメニューの名前を取得
+            let selectedButton = document.querySelector(`.menu-sections button[onclick="showMenu('${menu}')"]`);
+
+            if (selectedButton) {
+                selectedMenu = selectedButton.innerText;
+            }
+
+            // ✅ ローカルストレージにメニュー識別子を保存（追加）
+            localStorage.setItem('selectedMenu', menu); // ←この行を追加！
+
+            // すべてのメニューボタンの選択状態をリセット
+            document.querySelectorAll('.menu-sections button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // 選択されたメニューセクションを非表示＋ボタン状態リセット
+            document.querySelectorAll('.menu-section').forEach(section => {
+                section.classList.remove('active');
+                section.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            });
+
+            // 対応するメニューボタンを選択状態にする
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+                selectMenu(selectedButton);
+            }
+
+            // 選択されたメニューセクションを表示
+            document.getElementById(menu).classList.add('active');
+
+            // treatment-text の内容をリセット
+            document.getElementById("treatment-text").innerHTML = "";
+
+            // メニューとオプションをリセット
+            selectedSymptom = '';      // メニューのリセット
+            optiCount = '';    // オプションのリセット
+            menuPrice = 0;             // メニューの価格リセット
+            optionsPrice = 0;          // オプションの価格リセット
+            totalAmount = 0;           // 合計金額リセット
+
+            // 表示を更新
+            updateDisplayInfo();
+        }
+
+        // ページ読み込み時にローカルストレージから選択状態を復元
+        document.addEventListener("DOMContentLoaded", () => {
+            let selectedMenus = JSON.parse(localStorage.getItem('selectedMenus') || '[]');
+            selectedMenus.forEach(menuId => {
+                let menuButton = document.getElementById(menuId);
+                if (menuButton) {
+                    menuButton.classList.add('selected');
+                }
+            });
+        });
+
+        // ▼▼ 追加：URLクエリからUTMを拾うヘルパー ▼▼
+        function parseUtm() {
+            const p = new URLSearchParams(location.search);
+            return {
+                utmSource: p.get('utm_source') || '',
+                utmMedium: p.get('utm_medium') || '',
+                utmCampaign: p.get('utm_campaign') || ''
+            };
+        }
+
+        // ★GASのWebアプリURL（必ず /exec を使う）
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxvaXk1PRdZVu7qhdhKLCuw-g1V7PFfxwOkWaD8hYrBk_wa5c9ePEEh53ejPEyQsqti3g/exec';
+
+        /* ▼▼ 追加：サーバと同じ合言葉（簡易署名の鍵） ▼▼
+           ※公開ページに置くと閲覧者も読めます。実運用では中継サーバ等で秘匿がベター。 */
+        const SECURITY_SECRET = '9f3a7c1e5b2d48a0c6e1f4d9b3a8c2e7d5f0a1b6c3d8e2f7a9b0c4e6d1f3a5b7';
+
+        /* ▼▼ 追加：冪等性キー（同じ送信の二重登録防止）を作る ▼▼ */
+        function genRequestId() {
+            // 可能ならブラウザ組み込みのUUIDを利用
+            if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+
+            // Fallback: RFC4122っぽい簡易UUID
+            const rnd = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).slice(-4);
+            return `${rnd()}${rnd()}-${rnd()}-${rnd()}-${rnd()}-${rnd()}${rnd()}${rnd()}`;
+        }
+
+        // JP → ISO(+09:00)
+        function jpToISO(jp) {
+            const m = jp && jp.match(/(\d{4})年(\d{2})月(\d{2})日\s+(\d{2}):(\d{2})/);
+            if (!m) return null;
+            const [_, y, mo, d, h, mi] = m;
+            return `${y}-${mo}-${d}T${h}:${mi}:00+09:00`;
+        }
+
+        // 予約セル選択（firstChildだとテキストノードの時があるので修正）
+        function selectDate(cell) {
+            if (cell.classList.contains('unavailable')) return;
+
+            document.querySelectorAll('.calendar td').forEach(td => td.classList.remove('selected'));
+            cell.classList.add('selected');
+
+            const selectedDay = cell.getAttribute('data-date');
+            const row = cell.parentElement;
+            const timeCell = row.querySelector('td:first-child');
+            const selectedTime = timeCell ? timeCell.textContent.trim() : '';
+
+            const date = new Date(selectedDay);
+            selectedFullDate =
+                `${date.getFullYear()}年${('0' + (date.getMonth() + 1)).slice(-2)}月${('0' + date.getDate()).slice(-2)}日 ${selectedTime}`;
+
+            if (typeof updateDisplayInfo === 'function') updateDisplayInfo();
+        }
+
+/* ✅ 既存の submitForm をまるっと置換 */
+async function submitForm() {
+  // --- ここから：追加したい冒頭処理 ---
+  if (SUBMITTING) return;      // 二重タップ防止
+  SUBMITTING = true;
+  lockAll();                   // 全UIをタップ不可に
+  showSubmitOverlay();         // 「送信中…」表示
+  // --- ここまで：追加したい冒頭処理 ---
+
+  try {
+    // ======== ここからはあなたの元の処理（バリデーション～payload作成） ========
+    const formData = {
+      name: document.getElementById('name').value.trim(),
+      namehurigana: (document.getElementById('namehurigana')?.value || '').trim(),
+      phone: document.getElementById('phone').value.trim(),
+      email: (document.getElementById('email').value || '').trim(),
+      visitCount: typeof visitCount !== 'undefined' ? visitCount : '',
+      selectedMenu: typeof selectedMenu !== 'undefined' ? selectedMenu : '',
+      selectedSymptom: (typeof selectedSymptom !== 'undefined' && selectedSymptom && selectedSymptom.length > 0) ? selectedSymptom : null,
+      optiCount: typeof optiCount !== 'undefined' ? optiCount : '',
+      dates: (typeof selectedFullDate !== 'undefined' && selectedFullDate) ? [selectedFullDate] : null,
+      message: document.getElementById('message').value.trim()
+    };
+
+    if (!formData.name) { alert('お名前を入力してください。'); throw new Error('val'); }
+    if (!formData.phone) { alert('電話番号を入力してください。'); throw new Error('val'); }
+
+    const email1 = normalizeEmail(buildEmailFromParts(''));
+    const email2 = normalizeEmail(buildEmailFromParts('2'));
+    if (!email1) { alert('メールアドレスを入力してください。'); throw new Error('val'); }
+    if (!email2) { alert('確認用のメールアドレスを入力してください。'); throw new Error('val'); }
+    if (email1 !== email2) {
+      alert('入力が一致していません。メールアドレスをもう一度ご確認ください。');
+      document.getElementById('emailLocal2').focus();
+      throw new Error('val');
+    }
+    formData.email = email1;
+    document.getElementById('email').value = formData.email;
+    if (!isValidEmailStrict(formData.email)) {
+      document.getElementById('emailError').style.display = '';
+      alert('メールアドレスの形式が正しくありません。例：example@example.com');
+      document.getElementById('emailLocal').focus();
+      throw new Error('val');
+    } else {
+      document.getElementById('emailError').style.display = 'none';
+    }
+
+    if (!formData.selectedSymptom) { alert('メニューを選択してください。'); throw new Error('val'); }
+    if (!formData.dates) { alert('希望日時を選択してください。'); throw new Error('val'); }
+
+    const startIso = jpToISO(formData.dates[0]);
+    if (!startIso) { alert('日時の形式が不正です。'); throw new Error('val'); }
+
+    const durationMin =
+      (typeof selectedMenuTime === 'number' ? selectedMenuTime : 0) +
+      (typeof selectedoptiTime === 'number' ? selectedoptiTime : 0) +
+      (typeof selectedVisitTime === 'number' ? selectedVisitTime : 0) || 60;
+
+    const utm = parseUtm();
+    const metaReferrer = document.referrer || '';
+    const metaUA = navigator.userAgent || '';
+
+const payload = {
+  name: formData.name,
+  // ★ 追加：氏名（カナ）
+  namehurigana: formData.namehurigana,
+  phone: formData.phone,
+  email: formData.email,
+  // ★ 追加：ご予約について
+  visitCount: formData.visitCount,
+  selectedMenu: formData.selectedMenu,
+  selectedSymptom: formData.selectedSymptom,
+  optiCount: formData.optiCount,
+  message: formData.message,
+  startIso,
+  durationMin,
+  secret: SECURITY_SECRET,
+  requestId: genRequestId(),
+  referrer: metaReferrer,
+  userAgent: metaUA,
+  utmSource: utm.utmSource,
+  utmMedium: utm.utmMedium,
+  utmCampaign: utm.utmCampaign
+};
+
+    const res = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+    let json = null; try { json = JSON.parse(text); } catch(_) {}
+
+    if (!res.ok || !json || !json.ok) {
+      const msg = (json && json.error) ? json.error
+        : (res.status === 302 || text.includes('ServiceLogin')) ? '認証が必要なURL（/dev等）です'
+        : `HTTP ${res.status}`;
+      throw new Error(msg);
+    }
+
+    // ======== ここまであなたの元の処理 ========
+
+    // --- 成功時：ローディング→完了画面、以後はずっとロック ---
+    hideSubmitOverlay();
+    showFinalScreen();
+    // SUBMITTINGはtrueのまま（再送不可）
+
+  } catch (err) {
+    // バリデーションエラーや通信エラー時は元に戻す
+    console.error(err);
+    hideSubmitOverlay();
+    unlockAll();
+    SUBMITTING = false;
+    if (err && err.message && err.message !== 'val') {
+      alert('ご予約が埋まっているか、すでにご予約されております。');
+    }
+  }
+}
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return `${date.getFullYear()}年${('0' + (date.getMonth() + 1)).slice(-2)}月${('0' + date.getDate()).slice(-2)}日 ${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}`;
+        }
+
+        async function fetchAvailability(date) {
+            const startTime = new Date(date);
+            const endTime = new Date(date);
+            endTime.setDate(endTime.getDate() + 7);
+
+            const cacheKey = startTime.toISOString() + endTime.toISOString();
+
+            // キャッシュを確認
+            if (availabilityCache[cacheKey]) {
+                console.log('Using cached data');
+                updateCalendar(availabilityCache[cacheKey].availability, availabilityCache[cacheKey].businessDays);
+                return;
+            }
+
+            const url = 'https://script.google.com/macros/s/AKfycbyMCpwPdMBLFe3VETd_2vY9MQAhvCJLWehDMtOGYTsbf5Y0OkapnazmB1FMBJN4i-YK/exec' +
+                `?startTime=${startTime.toISOString()}&endTime=${endTime.toISOString()}`;
+
+            try {
+                showLoadingSpinner(); // Show loading spinner
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log(data);
+
+                // 営業日の情報を抽出
+                const businessDays = data.filter(event => event.summary === "営業日").map(event => {
+                    return {
+                        start: new Date(event.startTime),
+                        end: new Date(event.endTime)
+                    };
+                });
+
+                // データをキャッシュに保存
+                availabilityCache[cacheKey] = { availability: data, businessDays: businessDays };
+
+                updateCalendar(data, businessDays);
+            } catch (error) {
+                console.error('Error fetching availability:', error);
+            } finally {
+                hideLoadingSpinner(); // Hide loading spinner
+            }
+        }
+
+        function updateCalendar(availability, businessDays) {
+            const calendar = document.getElementById('calendar1');
+            const table = calendar.querySelector('table tbody');
+
+            const times = [
+                '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+                '12:00', '12:30', '13:00', '13:30',
+                '14:00', '14:30', '15:00', '15:30',
+                '16:00', '16:30', '17:00', '17:30',
+                '18:00'
+            ];
+
+            if (table.rows.length === 0) {
+                for (const time of times) {
+                    const row = document.createElement('tr');
+                    const timeCell = document.createElement('td');
+                    timeCell.textContent = time;
+                    row.appendChild(timeCell);
+
+                    for (let i = 0; i < 7; i++) {
+                        const cell = document.createElement('td');
+                        cell.addEventListener('click', () => selectDate(cell));
+                        row.appendChild(cell);
+                    }
+
+                    table.appendChild(row);
+                }
+            }
+
+            // テーブルのヘッダーを更新
+            updateCalendarHeader(currentDate);
+
+            // 各セルを空白にリセットし、クラスもリセット
+            for (let row of table.rows) {
+                for (let i = 1; i < row.cells.length; i++) {
+                    row.cells[i].textContent = '';
+                    row.cells[i].removeAttribute('data-date');
+                    row.cells[i].classList.remove('available', 'unavailable', 'selected');
+                }
+            }
+
+            // 現在の日時を取得
+            const now = new Date();
+
+            // テーブルの内容を更新
+            for (let i = 0; i < 7; i++) {
+                const day = new Date(currentDate);
+                day.setDate(day.getDate() + i);
+
+                let businessEventTimes = []; // 営業日のイベント時間帯を記録する配列
+
+                availability.forEach(slot => {
+                    const eventStart = new Date(slot.startTime);
+                    const eventEnd = new Date(slot.endTime);
+                    if (eventStart.toDateString() === day.toDateString() && slot.title === "営業日") {
+                        businessEventTimes.push({ start: eventStart, end: eventEnd });
+                    }
+                });
+
+                for (let j = 0; j < times.length; j++) {
+                    const cell = table.rows[j].cells[i + 1];
+
+                    const slotStart = new Date(day);
+                    slotStart.setHours(parseInt(times[j].split(':')[0]), parseInt(times[j].split(':')[1]), 0, 0);
+
+                    let slotEnd = new Date(slotStart);
+                    let menuDuration = selectedMenuTime || 10;
+                    let visitDuration = selectedVisitTime || 0;
+                    let optiDuration = selectedoptiTime || 0;
+
+                    // 仮に終了時間を計算
+                    slotEnd.setMinutes(slotStart.getMinutes() + menuDuration + visitDuration + optiDuration);
+
+                    // 日付を跨ぐ場合は✕
+                    if (slotEnd.getDate() !== slotStart.getDate()) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                        continue;
+                    }
+
+                    // 18時以降に終了する予約は✕
+                    if (slotEnd.getHours() === 18 && slotEnd.getMinutes() > 0 || slotEnd.getHours() > 18) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                        continue;
+                    }
+
+                    // 過去の時間は✕
+                    if (slotStart < now) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                        continue;
+                    }
+
+                    // 当日の営業時間内かどうか（Googleカレンダーイベント）
+                    const isBusinessEventTime = businessEventTimes.some(event => {
+                        return slotStart >= event.start && slotEnd <= event.end;
+                    });
+
+                    // 通常の営業日（手動設定されたbusinessDays）
+                    const isBusinessDay = businessDays.some(businessDay => {
+                        const businessDayStart = new Date(businessDay.start);
+                        const businessDayEnd = new Date(businessDay.end);
+                        return slotStart >= businessDayStart && slotEnd <= businessDayEnd;
+                    });
+
+                    // 営業日以外の重複イベントを取得
+                    const relevantEvents = availability.filter(slot => {
+                        const eventStart = new Date(slot.startTime);
+                        const eventEnd = new Date(slot.endTime);
+                        return slot.title !== "営業日" && eventStart < slotEnd && eventEnd > slotStart;
+                    });
+
+                    // 同時刻に3件以上予約があると✕
+                    let overLimit = false;
+                    for (let checkTime = new Date(slotStart.getTime()); checkTime < slotEnd; checkTime.setMinutes(checkTime.getMinutes() + 1)) {
+                        let overlapping = 1; // 自予約を含む
+                        relevantEvents.forEach(slot => {
+                            const eventStart = new Date(slot.startTime);
+                            const eventEnd = new Date(slot.endTime);
+                            if (eventStart <= checkTime && eventEnd > checkTime) {
+                                overlapping++;
+                            }
+                        });
+                        if (overlapping >= 2) {
+                            overLimit = true;
+                            break;
+                        }
+                    }
+
+                    // 最終的な可否判定
+                    if (isBusinessEventTime && !overLimit) {
+                        cell.textContent = '◯';
+                        cell.classList.add('available');
+                    } else if (isBusinessEventTime && overLimit) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                    } else if (slotStart.getDay() === 0 && !isBusinessDay && businessEventTimes.length === 0) {
+                        // 日曜日で、営業日でない場合は ✕
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                    } else if (isBusinessDay && !overLimit) {
+                        cell.textContent = '◯';
+                        cell.classList.add('available');
+                    } else if (!isBusinessEventTime && businessEventTimes.length > 0) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                    } else if (!overLimit) {
+                        cell.textContent = '◯';
+                        cell.classList.add('available');
+                    } else {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                    }
+
+
+                    // セルにこの時間帯のデータ属性を追加（ISO形式の日時）
+                    cell.setAttribute('data-date', slotStart.toISOString());
+                }
+            }
+        }
+
+        function updateCalendarHeader(date) {
+            const headerRow = document.getElementById('calendar-header');
+            const headers = headerRow.querySelectorAll('th:not(:first-child)');
+
+            // サンプルの祝日データ（必要に応じて動的に取得も検討）
+            const holidays = [
+                '2025-02-11', // 建国記念の日
+                '2025-02-23', // 天皇誕生日
+                '2025-02-24', // 天皇誕生日 振替休日
+                '2025-03-20', // 春分の日
+                '2025-04-29', // 昭和の日
+                '2025-05-03', // 憲法記念日
+                '2025-05-04', // みどりの日
+                '2025-05-05', // こどもの日
+                '2025-05-06', // みどりの日 振替休日
+                '2025-07-21', // 海の日
+                '2025-08-11', // 山の日
+                '2025-09-15', // 敬老の日
+                '2025-09-23', // 秋分の日
+                '2025-10-13', // 体育の日
+                '2025-11-03', // 文化の日
+                '2025-11-23', // 勤労感謝の日
+                '2025-11-24', // 勤労感謝の日 振替休日
+                '2026-01-01', // 元日
+                '2026-01-12', // 成人の日
+                '2026-02-11', // 建国記念の日
+                '2026-02-23', // 天皇誕生日
+                '2026-03-20', // 春分の日
+                '2026-04-29', // 昭和の日
+                '2026-05-03', // 憲法記念日
+                '2026-05-04', // 憲法記念日 振替休日
+                '2026-05-05', // みどりの日
+                '2026-05-06', // こどもの日
+                '2026-07-20', // 海の日
+                '2026-08-11', // 山の日
+                '2026-09-21', // 敬老の日
+                '2026-09-22', // 国民の休日
+                '2026-09-23', // 秋分の日
+                '2026-10-12', // 体育の日
+                '2026-11-03', // 文化の日
+                '2026-11-23', // 勤労感謝の日
+                '2027-01-01', // 元日
+                '2027-01-11', // 成人の日
+                '2027-02-11', // 建国記念の日
+                '2027-02-23', // 天皇誕生日
+                '2027-03-20', // 春分の日
+                '2027-04-29', // 昭和の日
+                '2027-05-03', // 憲法記念日
+                '2027-05-04', // みどりの日
+                '2027-05-05', // こどもの日
+                '2027-07-19', // 海の日
+                '2027-08-11', // 山の日
+                '2027-09-20', // 敬老の日
+                '2027-09-23', // 秋分の日
+                '2027-10-11', // 体育の日
+                '2027-11-03', // 文化の日
+                '2027-11-23', // 勤労感謝の日
+                '2028-01-01', // 元日
+                '2028-01-10', // 成人の日
+                '2028-02-11', // 建国記念の日
+                '2028-02-23', // 天皇誕生日
+                '2028-03-20', // 春分の日
+                '2028-04-29', // 昭和の日
+                '2028-05-03', // 憲法記念日
+                '2028-05-04', // みどりの日
+                '2028-05-05', // こどもの日
+                '2028-07-17', // 海の日
+                '2028-08-11', // 山の日
+                '2028-09-18', // 敬老の日
+                '2028-09-22', // 秋分の日
+                '2028-10-09', // 体育の日
+                '2028-11-03', // 文化の日
+                '2028-11-23'  // 勤労感謝の日
+            ];
+
+            const startDate = new Date(date);
+            headers.forEach((th, index) => {
+                const day = new Date(startDate);
+                day.setDate(day.getDate() + index);
+
+                const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+                const formattedDate = `${day.getFullYear()}-${(day.getMonth() + 1).toString().padStart(2, '0')}-${day.getDate().toString().padStart(2, '0')}`;
+                const dayString = `${day.getDate()}(${dayOfWeek[day.getDay()]})`;
+
+                th.innerHTML = dayString.replace('(', '<br>(');
+
+                // 祝日を赤色に変更（曜日判定ではなく完全一致判定）
+                if (holidays.includes(formattedDate)) {
+                    th.style.color = 'red';
+                } else if (day.getDay() === 0) { // 日曜日（赤）
+                    th.style.color = 'red';
+                } else if (day.getDay() === 6) { // 土曜日（青）
+                    th.style.color = 'blue';
+                } else {
+                    th.style.color = ''; // 通常色にリセット
+                }
+            });
+
+            // 現在の月を表示
+            const currentMonthElement = document.getElementById('currentMonth');
+            currentMonthElement.innerHTML = `<span class="year">${startDate.getFullYear()}年</span><br><span class="month">${startDate.getMonth() + 1}月</span>`;
+
+        }
+
+        function nextmonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1); // 翌月に移動
+            currentDate.setDate(1); // 1日に設定
+            fetchAvailability(currentDate);
+        }
+
+        function previousmonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1); // 前月に移動
+            currentDate.setDate(1); // 1日に設定
+            fetchAvailability(currentDate);
+        }
+
+        function nextWeek() {
+            currentDate.setDate(currentDate.getDate() + 7);
+            fetchAvailability(currentDate);
+        }
+
+        function previousWeek() {
+            currentDate.setDate(currentDate.getDate() - 7);
+            fetchAvailability(currentDate);
+        }
+
+        function showLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+
+        function hideLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+    </script>
+<div id="submitOverlay" class="submit-overlay" aria-live="polite" aria-busy="true">
+  <div class="box">
+    <div class="submit-spinner"></div>
+    <div class="title">送信中です…</div>
+    <div class="msg">しばらくお待ちください。</div>
+  </div>
+</div>
+
+<div id="finalScreen" class="final-screen" role="dialog" aria-modal="true">
+  <div class="box">
+    <div class="title">送信が完了しました</div>
+    <div class="msg">この画面を閉じてください。</div>
+  </div>
+</div>
+</body>
+
+</html>
