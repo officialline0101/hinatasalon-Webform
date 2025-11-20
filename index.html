@@ -2364,6 +2364,60 @@
         body.locked .final-screen * {
             pointer-events: auto !important;
         }
+
+/* 基本スタイル */
+.info-texttop {
+    margin: 20px 0;
+    font-family: "Noto Sans JP", "Roboto", sans-serif;
+    font-size: 14px;
+    color: #333; /* 読みやすい濃い文字色 */
+    background-color: #f8f9fa;
+    line-height: 1.8;
+    text-align: left;
+    word-wrap: break-word;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    max-width: 800px; /* 横幅制限 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+    overflow-y: auto; /* 長文スクロール対応 */
+}
+
+/* 見出しスタイル */
+.info-texttop h1 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.info-texttop h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+/* 強調テキスト */
+.info-texttop strong {
+    color: #007bff;
+}
+
+/* モバイル向け調整 */
+@media (max-width: 768px) {
+    .info-texttop {
+        font-size: 13px;
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .info-texttop h1 {
+        font-size: 16px;
+    }
+
+    .info-texttop h2 {
+        font-size: 14px;
+    }
+}
     </style>
 </head>
 
@@ -2379,6 +2433,7 @@
     <div class="container">
         <h1>
         </h1>
+        <div class="info-texttop">こちらは来院予約専用です。<br>オンライン相談や訪問の予約には対応いたしかねます。ご了承ください。</div>
         <!-- 追加するボタン -->
         <div class="repeat-booking-wrapper">
             <button type="button" id="repeatBookingButton" onclick="applyPreviousSelection()">
@@ -2401,7 +2456,7 @@
             <button type="button" id="repeatVisit" onclick="selectVisit(this)">2回目以降</button>
         </div>
 
-        <div class="label">メールアドレス<span class="required">必須</span></div>
+        <div class="label" id="email">メールアドレス<span class="required">必須</span></div>
 
         <!-- 実際に送信されるメール値 -->
         <input type="hidden" id="email" name="email" />
@@ -2485,14 +2540,14 @@
 
         <div class="label" id="course">メニューをお選びください<span class="required">必須</span></div>
         <div class="symptoms">
-            <button type="button" onclick="selectSymptom(this, 'treatment3')" data-price="15000">ベビーケア・育児相談</button>
-            <button type="button" onclick="selectSymptom(this, 'treatment1')" data-price="15000">マタニティ整体</button>
-            <button type="button" onclick="selectSymptom(this, 'treatment2')" data-price="15000">産後整体</button>
-            <button type="button" onclick="selectSymptom(this, 'treatment8')" data-price="15000">おっぱいマッサージ</button>
-            <button type="button" onclick="selectSymptom(this, 'treatment4')" data-price="15000">産後ピラティス</button>
-            <button type="button" onclick="selectSymptom(this, 'treatment5')" data-price="15000">母子ケア</button>
-            <button type="button" onclick="selectSymptom(this, 'treatment6')" data-price="15000">ファミリーケア</button>
-            <button type="button" onclick="selectSymptom(this, 'treatment7')" data-price="15000">整体</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment3')" data-price="15000">ベビーケア・育児相談 45分</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment1')" data-price="15000">マタニティ整体 45分</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment2')" data-price="15000">産後整体 45分</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment8')" data-price="15000">おっぱいマッサージ 45分</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment4')" data-price="15000">産後ピラティス 45分</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment5')" data-price="15000">母子ケア 90分</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment6')" data-price="15000">ファミリーケア 135分</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment7')" data-price="15000">整体 45分</button>
         </div>
 
         <div class="label">希望日時<span class="required">必須</span></div>
@@ -2505,7 +2560,7 @@
                 style="color:#0936ff; text-decoration:underline;">
                 利用規約
             </a>条項の【6】をご確認ください。<br><br>
-            【○月○日】【○月○日】
+            【12月11,23日】
         </div>
         <div class="calendar-container">
             <!-- 月を独立して配置 -->
@@ -2560,12 +2615,12 @@
             </a>
             をお読みください。<br>
             ・初回は予約時間の10分前にお越しくださいませ。<br>
-            妊婦さんは【分娩予定日】<br>
-            産後整体やピラティスでのご予約の方は【出産日】<br>
-            赤ちゃんでのご予約は【生年月日】<br>
+            ・妊婦さんは【分娩予定日】<br>
+            ・産後整体やピラティスでのご予約の方は【出産日】<br>
+            ・赤ちゃんでのご予約は【生年月日】<br>
             それぞれ西暦からご記入ください。<br>
-            ・簡単に【相談内容】と【第何子か】を教えてください。<br>
-            ・当日は、母子手帳と着替えをご持参ください。
+            簡単に【相談内容】と【第何子か】を教えてください。<br>
+            当日は、母子手帳と着替えをご持参ください。
         </div>
         <textarea id="message" rows="4" placeholder="入力してください"></textarea>
 
@@ -2650,7 +2705,7 @@ function copySummaryForUser() {
 
         // 訪問回数ごとの時間設定 (例：初めて=20分、2回目以降=15分)
         let visitTimes = {
-            '1回目〈30分〉': 30,
+            '1回目〈30分〉': 0,
             '2回目以降〈0分〉': 0
         };
 
@@ -2658,28 +2713,20 @@ function copySummaryForUser() {
 
         // 訪問回数ごとの時間設定 (例：初めて=20分、2回目以降=15分)
         let optiTimes = {
-            '眉カット〈30分〉': 30,
-            '襟足〈30分〉': 30,
-            '背中(キャミソールライン)〈30分〉': 30,
-            '背中(腰まで)〈30分〉': 30,
-            'デコルテ〈30分〉': 30,
-            '腕〈30分〉': 30,
-            '保湿パック〈30分〉': 30,
-            'ベーシックマッサージ〈30分〉': 30,
-            'リラックスマッサージ〈30分〉': 30,
-            '美白パック〈30分〉': 30
+            '美白パック〈30分〉': 0
         };
 
         let selectedoptiTime = 0; // 訪問回数で選択された時間
 
         let menuTimes = {
-            '和装プラン〈30分〉': 30,
-            '洋装プランA〈60分〉': 60,
-            '洋装プランB〈120分〉': 120,
-            '洋装プランC〈30分〉': 30,
-            'リラックスコース〈60分〉': 60,
-            'ベーシックコース〈30分〉': 30,
-            'スピードコース〈90分〉': 90
+            'ベビーケア・育児相談 45分': 45,
+            'マタニティ整体 45分': 45,
+            '産後整体 45分': 45,
+            'おっぱいマッサージ 45分': 45,
+            '産後ピラティス 45分': 45,
+            '母子ケア 90分': 45,
+            'ファミリーケア 135分': 45,
+            '整体 45分': 45
         };
 
         let selectedMenuTime = 0;
@@ -2924,7 +2971,7 @@ function applyPreviousSelection() {
         <hr>
         <div class="info-row">
             <p>${selectedSymptomText}</p>
-            <button class="edit-button" onclick="scrollToElement('male'); scrollToElement('female'); scrollToElement('whitening');">修正</button>
+            <button class="edit-button" onclick="scrollToElement('course');">修正</button>
         </div>
         <hr>
         <div class="info-row">
@@ -3555,7 +3602,7 @@ function applyPreviousSelection() {
         }
 
         // ★GASのWebアプリURL（必ず /exec を使う）
-        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxvaXk1PRdZVu7qhdhKLCuw-g1V7PFfxwOkWaD8hYrBk_wa5c9ePEEh53ejPEyQsqti3g/exec';
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxRPsNY-wp6RJJNMI28alt0bYoUKws_OvBedOfxnlMu4E5B12-XH4QeHqyOdUZJ2aCp0Q/exec';
 
         /* ▼▼ 追加：サーバと同じ合言葉（簡易署名の鍵） ▼▼
            ※公開ページに置くと閲覧者も読めます。実運用では中継サーバ等で秘匿がベター。 */
@@ -3771,11 +3818,10 @@ const payload = {
             const table = calendar.querySelector('table tbody');
 
             const times = [
-                '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-                '12:00', '12:30', '13:00', '13:30',
-                '14:00', '14:30', '15:00', '15:30',
-                '16:00', '16:30', '17:00', '17:30',
-                '18:00'
+                '10:00', '10:45', '11:30',
+                '12:15', '13:00', '13:45',
+                '14:00', '14:45', '15:30',
+                '16:15',
             ];
 
             if (table.rows.length === 0) {
@@ -3848,6 +3894,15 @@ const payload = {
 
                     // 18時以降に終了する予約は✕
                     if (slotEnd.getHours() === 18 && slotEnd.getMinutes() > 0 || slotEnd.getHours() > 18) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                        continue;
+                    }
+
+                    // ★追加：13:46〜13:59の間を✕にする
+                    if (
+                        (slotStart.getHours() === 13 && slotStart.getMinutes() >= 45 && slotStart.getMinutes() <= 59)
+                    ) {
                         cell.textContent = '✕';
                         cell.classList.add('unavailable');
                         continue;
