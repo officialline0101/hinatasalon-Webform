@@ -3878,7 +3878,7 @@ const payload = {
                     slotStart.setHours(parseInt(times[j].split(':')[0]), parseInt(times[j].split(':')[1]), 0, 0);
 
                     let slotEnd = new Date(slotStart);
-                    let menuDuration = selectedMenuTime || 10;
+                    let menuDuration = selectedMenuTime || 0;
                     let visitDuration = selectedVisitTime || 0;
                     let optiDuration = selectedoptiTime || 0;
 
