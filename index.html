@@ -3893,10 +3893,16 @@ const payload = {
                         continue;
                     }
 
-                    // ★追加：13:46〜13:59の間を✕にする
-                    if (
-                        (slotStart.getHours() === 13 && slotStart.getMinutes() >= 45 && slotStart.getMinutes() <= 59)
-                    ) {
+                    // 制限したい時間帯を設定 (13:45 ～ 14:00まで休憩とみなす)
+                    const restrictedStart = new Date(day);
+                    restrictedStart.setHours(13, 45, 0, 0); // 13:45開始
+
+                    const restrictedEnd = new Date(day);
+                    restrictedEnd.setHours(14, 0, 0, 0);   // 13:59まで不可 = 14:00から可
+
+                    // 予約時間が制限時間帯と「重複」しているかチェック
+                    // ロジック: 「予約開始が制限終了より前」かつ「予約終了が制限開始より後」なら被っている
+                    if (slotStart < restrictedEnd && slotEnd > restrictedStart) {
                         cell.textContent = '✕';
                         cell.classList.add('unavailable');
                         continue;
