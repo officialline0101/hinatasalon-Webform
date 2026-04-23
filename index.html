@@ -2733,21 +2733,21 @@
             </label>
         </div>
         <!-- 生年月日・分娩予定日 -->
-        <div class="label">生年月日 / 分娩予定日</div>
+        <div class="label">生年月日 / 分娩予定日<span class="required shoshin-required" style="display:none;">必須</span></div>
         <div class="info-text" style="font-size:13px; padding:10px 14px; margin-bottom:6px;">
             ベビーケアの方は赤ちゃんの生年月日を、産後整体とおっぱいマッサージの方は分娩日を、マタニティ整体の方は分娩予定日をご記入ください
         </div>
         <input type="text" id="msg_birthday" placeholder="例：2024年4月1日" oninput="updateMessage()">
 
         <!-- 相談内容 -->
-        <div class="label">相談内容</div>
+        <div class="label">相談内容<span class="required shoshin-required" style="display:none;">必須</span></div>
         <div class="info-text" style="font-size:13px; padding:10px 14px; margin-bottom:6px;">
             箇条書きで構いませんので、相談内容をご記入ください
         </div>
         <textarea id="msg_consul" rows="4" placeholder="例：・腰痛&#10;・授乳について" oninput="updateMessage()"></textarea>
 
         <!-- 第何子ですか？ -->
-        <div class="label">第何子ですか？</div>
+        <div class="label">第何子ですか？<span class="required shoshin-required" style="display:none;">必須</span></div>
         <input type="text" id="msg_child" placeholder="例：第1子" oninput="updateMessage()">
 
         <!-- 送信用の非表示textarea（実際の送信データ） -->
@@ -3656,12 +3656,17 @@ function applyPreviousSelection() {
             // 初診エリアの表示/非表示を切り替え
             const shoshinArea = document.getElementById('shoshinArea');
             if (element.id === 'firstVisit') {
-                // 初診の場合は表示
+                // 初診の場合は表示し、必須バッジを表示
                 shoshinArea.style.display = 'block';
+                document.querySelectorAll('.shoshin-required').forEach(el => el.style.display = '');
             } else {
-                // 2回目以降の場合は非表示にし、入力内容をクリア
+                // 2回目以降の場合は非表示にし、入力内容をクリア・必須バッジを非表示
                 shoshinArea.style.display = 'none';
                 document.getElementById('message').value = '';
+                document.getElementById('msg_birthday').value = '';
+                document.getElementById('msg_consul').value = '';
+                document.getElementById('msg_child').value = '';
+                document.querySelectorAll('.shoshin-required').forEach(el => el.style.display = 'none');
             }
 
             // 選択された訪問回数に対応する時間を取得
@@ -3759,7 +3764,7 @@ function applyPreviousSelection() {
         }
 
         // ★GASのWebアプリURL（必ず /exec を使う）
-        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzDB_TTWzYz6pW5CF2PUlG8wnZ9LPEEhKhj3V8YB_Xp0JpoX01D-ZZYXXpOXSCCTptOkg/exec';
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwDaUKDOpUy2bN0z0iG1vRiP7gZ9SVmbmQ9h3IUgD7eSJX4S1kLVaBIH0wrJfhCH4hfIA/exec';
 
         /* ▼▼ 追加：サーバと同じ合言葉（簡易署名の鍵） ▼▼
            ※公開ページに置くと閲覧者も読めます。実運用では中継サーバ等で秘匿がベター。 */
@@ -3851,9 +3856,11 @@ async function submitForm() {
 
     if (!formData.selectedSymptom) { alert('メニューを選択してください。'); throw new Error('val'); }
     if (!formData.dates) { alert('希望日時を選択してください。'); throw new Error('val'); }
-    // 初診の場合のみチェックボックスとメッセージ入力を必須にする
+    // 初診の場合のみチェックボックスと各フィールドを必須チェック
     if (visitCount === '初診' && !document.getElementById('agreeCheck').checked) { alert('利用規約に同意してください。'); throw new Error('val'); }
-    if (visitCount === '初診' && !formData.message) { alert('初診の方は内容を入力してください。'); throw new Error('val'); }
+    if (visitCount === '初診' && !document.getElementById('msg_birthday').value.trim()) { alert('生年月日 / 分娩予定日を入力してください。'); throw new Error('val'); }
+    if (visitCount === '初診' && !document.getElementById('msg_consul').value.trim()) { alert('相談内容を入力してください。'); throw new Error('val'); }
+    if (visitCount === '初診' && !document.getElementById('msg_child').value.trim()) { alert('第何子かを入力してください。'); throw new Error('val'); }
 
     const startIso = jpToISO(formData.dates[0]);
     if (!startIso) { alert('日時の形式が不正です。'); throw new Error('val'); }
