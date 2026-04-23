@@ -2732,8 +2732,43 @@
                 <span class="agree-text">利用規約に同意しました</span>
             </label>
         </div>
-        <textarea id="message" rows="4" placeholder="入力してください"></textarea>
+        <!-- 生年月日・分娩予定日 -->
+        <div class="label">生年月日 / 分娩予定日</div>
+        <div class="info-text" style="font-size:13px; padding:10px 14px; margin-bottom:6px;">
+            ベビーケアの方は赤ちゃんの生年月日を、産後整体とおっぱいマッサージの方は分娩日を、マタニティ整体の方は分娩予定日をご記入ください
         </div>
+        <input type="text" id="msg_birthday" placeholder="例：2024年4月1日" oninput="updateMessage()">
+
+        <!-- 相談内容 -->
+        <div class="label">相談内容</div>
+        <div class="info-text" style="font-size:13px; padding:10px 14px; margin-bottom:6px;">
+            箇条書きで構いませんので、相談内容をご記入ください
+        </div>
+        <textarea id="msg_consul" rows="4" placeholder="例：・腰痛&#10;・授乳について" oninput="updateMessage()"></textarea>
+
+        <!-- 第何子ですか？ -->
+        <div class="label">第何子ですか？</div>
+        <input type="text" id="msg_child" placeholder="例：第1子" oninput="updateMessage()">
+
+        <!-- 送信用の非表示textarea（実際の送信データ） -->
+        <textarea id="message" rows="1" style="display:none;"></textarea>
+        </div>
+
+        <script>
+        /* 各フィールドの内容を結合して textarea#message に格納する */
+        function updateMessage() {
+            var birthday = document.getElementById('msg_birthday').value.trim();
+            var consul   = document.getElementById('msg_consul').value.trim();
+            var child    = document.getElementById('msg_child').value.trim();
+
+            var parts = [];
+            if (birthday) parts.push('【生年月日/分娩予定日】' + birthday);
+            if (consul)   parts.push('【相談内容】' + consul);
+            if (child)    parts.push('【第何子】' + child);
+
+            document.getElementById('message').value = parts.join('\n');
+        }
+        </script>
 
         <div class="label">ご予約内容</div>
         <div id="displayInfo"></div> <!-- ここに選択された情報を表示します -->
@@ -3724,7 +3759,7 @@ function applyPreviousSelection() {
         }
 
         // ★GASのWebアプリURL（必ず /exec を使う）
-        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwSA1FTiupIXxvcAWFCXSIc-i5rgcZ_u9ZnDqhnoW-dULVWIYP-i9XnVIXlVoMXq5XRkg/exec';
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzDB_TTWzYz6pW5CF2PUlG8wnZ9LPEEhKhj3V8YB_Xp0JpoX01D-ZZYXXpOXSCCTptOkg/exec';
 
         /* ▼▼ 追加：サーバと同じ合言葉（簡易署名の鍵） ▼▼
            ※公開ページに置くと閲覧者も読めます。実運用では中継サーバ等で秘匿がベター。 */
