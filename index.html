@@ -2538,10 +2538,16 @@
         </div>
 
         <div class="label">氏名<span class="required">必須</span></div>
-        <input type="text" id="name" placeholder="氏名を入力してください" oninput="saveInput('name')">
+        <div style="display:flex; gap:8px;">
+            <input type="text" id="nameSei" placeholder="苗字（例：山田）" oninput="saveInput('nameSei')" style="flex:1;">
+            <input type="text" id="nameMei" placeholder="名前（例：花子）" oninput="saveInput('nameMei')" style="flex:1;">
+        </div>
 
         <div class="label">氏名（カナ）<span class="required">必須</span></div>
-        <input type="text" id="namehurigana" placeholder="フリガナを入力してください" oninput="saveInput('namehurigana')">
+        <div style="display:flex; gap:8px;">
+            <input type="text" id="nameSeiKana" placeholder="苗字（例：ヤマダ）" oninput="saveInput('nameSeiKana')" style="flex:1;">
+            <input type="text" id="nameMeiKana" placeholder="名前（例：ハナコ）" oninput="saveInput('nameMeiKana')" style="flex:1;">
+        </div>
 
         <div class="label">電話番号<span class="required">必須</span></div>
         <input type="tel" id="phone" placeholder="電話番号を入力してください" oninput="saveInput('phone')">
@@ -2885,13 +2891,17 @@ function copySummaryForUser() {
 
         // ページが読み込まれたときに前回の入力内容を復元
         document.addEventListener('DOMContentLoaded', function () {
-            const savedName = localStorage.getItem('name');
-            const savednamehurigana = localStorage.getItem('namehurigana');
+            const savedNameSei = localStorage.getItem('nameSei');
+            const savedNameMei = localStorage.getItem('nameMei');
+            const savedNameSeiKana = localStorage.getItem('nameSeiKana');
+            const savedNameMeiKana = localStorage.getItem('nameMeiKana');
             const savedPhone = localStorage.getItem('phone');
             const savedEmail = localStorage.getItem('email');
 
-            if (savedName) document.getElementById('name').value = savedName;
-            if (savednamehurigana) document.getElementById('namehurigana').value = savednamehurigana;
+            if (savedNameSei) document.getElementById('nameSei').value = savedNameSei;
+            if (savedNameMei) document.getElementById('nameMei').value = savedNameMei;
+            if (savedNameSeiKana) document.getElementById('nameSeiKana').value = savedNameSeiKana;
+            if (savedNameMeiKana) document.getElementById('nameMeiKana').value = savedNameMeiKana;
             if (savedPhone) document.getElementById('phone').value = savedPhone;
             if (savedEmail) document.getElementById('email').value = savedEmail;
         });
@@ -3061,7 +3071,9 @@ function applyPreviousSelection() {
         };
 
         function updateDisplayInfo() {
-            const name = document.getElementById('name').value;
+            const nameSei = document.getElementById('nameSei').value;
+            const nameMei = document.getElementById('nameMei').value;
+            const name = (nameSei + ' ' + nameMei).trim();
             const phone = document.getElementById('phone').value;
             const email = document.getElementById('email').value;
             const labelStyle = "color:#0c0c0c; font-size:14px; border:1px solid #0c0c0c; padding:0px 3px; border-radius:4px;";
@@ -3137,7 +3149,8 @@ function applyPreviousSelection() {
         }
 
         // 各ボタンや入力フィールドでupdateDisplayInfoを呼び出すようにする
-        document.getElementById('name').addEventListener('input', updateDisplayInfo);
+        document.getElementById('nameSei').addEventListener('input', updateDisplayInfo);
+        document.getElementById('nameMei').addEventListener('input', updateDisplayInfo);
         document.querySelectorAll('.visit-buttons button').forEach(button => {
             button.addEventListener('click', updateDisplayInfo);
         });
@@ -3818,9 +3831,14 @@ async function submitForm() {
 
   try {
     // ======== ここからはあなたの元の処理（バリデーション～payload作成） ========
+    const nameSei = document.getElementById('nameSei').value.trim();
+    const nameMei = document.getElementById('nameMei').value.trim();
+    const nameSeiKana = document.getElementById('nameSeiKana').value.trim();
+    const nameMeiKana = document.getElementById('nameMeiKana').value.trim();
+
     const formData = {
-      name: document.getElementById('name').value.trim(),
-      namehurigana: (document.getElementById('namehurigana')?.value || '').trim(),
+      name: (nameSei + ' ' + nameMei).trim(),
+      namehurigana: (nameSeiKana + ' ' + nameMeiKana).trim(),
       phone: document.getElementById('phone').value.trim(),
       email: (document.getElementById('email').value || '').trim(),
       visitCount: typeof visitCount !== 'undefined' ? visitCount : '',
@@ -3831,7 +3849,10 @@ async function submitForm() {
       message: document.getElementById('message').value.trim()
     };
 
-    if (!formData.name) { alert('お名前を入力してください。'); throw new Error('val'); }
+    if (!nameSei) { alert('氏名（苗字）を入力してください。'); throw new Error('val'); }
+    if (!nameMei) { alert('氏名（名前）を入力してください。'); throw new Error('val'); }
+    if (!nameSeiKana) { alert('氏名（カナ）の苗字を入力してください。'); throw new Error('val'); }
+    if (!nameMeiKana) { alert('氏名（カナ）の名前を入力してください。'); throw new Error('val'); }
     if (!formData.phone) { alert('電話番号を入力してください。'); throw new Error('val'); }
 
     const email1 = normalizeEmail(buildEmailFromParts(''));
