@@ -2037,6 +2037,14 @@
             content: "基本料金";
         }
 
+        /* 🆕 支払い方法 */
+        .treatment-payment {
+            margin-top: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink-muted);
+        }
+
         /* 強調 */
         .treatment-price strong,
         .treatment-basic strong {
@@ -3519,7 +3527,7 @@ function applyPreviousSelection() {
                     : '';
 
                 const basicContent = hasBasic
-                    ? `<div class="treatment-basic"><span></span><strong>${basic}</strong></div>`
+                    ? `<div class="treatment-basic"><span></span><strong>${basic}</strong></div><div class="treatment-payment">支払い方法：現金、カード、PayPay</div>`
                     : '';
 
                 // 出力順序を制御（タイトル→画像→詳細→料金→基本料金）
