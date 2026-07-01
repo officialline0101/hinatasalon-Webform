@@ -2045,6 +2045,63 @@
             color: var(--ink-muted);
         }
 
+        /* 🆕 料金改定の予告（基本料金の下） */
+        .treatment-price-change {
+            margin-top: 6px;
+            padding: 8px 10px;
+            background: #fff8e1;
+            border: 1px solid #e0a800;
+            border-left: 4px solid #e0a800;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.6;
+            color: #8a6d00;
+            box-sizing: border-box;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        /* 🆕 料金変更のお知らせ（ご予約内容） */
+        .price-change-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 8px 0 4px;
+            padding: 10px 12px;
+            background: #fff5f8;
+            border: 1px solid #d6336c;
+            border-left: 4px solid #d6336c;
+            border-radius: 8px;
+            color: #c2255c;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.6;
+            text-align: left;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .price-change-notice__icon {
+            flex: 0 0 auto;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .price-change-notice__text {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        @media (max-width: 480px) {
+            .price-change-notice {
+                font-size: 12px;
+                padding: 9px 10px;
+            }
+        }
+
         /* 強調 */
         .treatment-price strong,
         .treatment-basic strong {
@@ -2655,7 +2712,7 @@
             <button type="button" onclick="selectSymptom(this, 'treatment2')" data-price="15000">産後整体 45分</button>
             <button type="button" onclick="selectSymptom(this, 'treatment8')" data-price="15000">おっぱいマッサージ 45分</button>
             <button type="button" onclick="selectSymptom(this, 'treatment4')" data-price="15000">産後ピラティス 45分</button>
-            <button type="button" onclick="selectSymptom(this, 'treatment5')" data-price="15000">母子・きょうだいケア 90分</button>
+            <button type="button" onclick="selectSymptom(this, 'treatment5')" data-price="15000">母子/きょうだいケア 90分</button>
             <button type="button" onclick="selectSymptom(this, 'treatment6')" data-price="15000">ファミリーケア 135分</button>
             <button type="button" onclick="selectSymptom(this, 'treatment7')" data-price="15000">整体 45分</button>
         </div>
@@ -2756,7 +2813,7 @@
         <!-- 相談内容 -->
         <div class="label">相談内容<span class="required shoshin-required" style="display:none;">必須</span></div>
         <div class="info-text" style="font-size:13px; padding:10px 14px; margin-bottom:6px;">
-            箇条書きで構いませんので、相談内容をご記入ください
+            箇条書きで構いませんので、<br>相談内容をご記入ください<br>※質問、予約のキャンセル依頼等はご記入されませんようお願いします。対応致しかねます。
         </div>
         <textarea id="msg_consul" rows="4" placeholder="例:腰痛・乳腺炎・頭の形・抱っこ・離乳食" oninput="updateMessage()"></textarea>
 
@@ -2884,7 +2941,7 @@ function copySummaryForUser() {
             '産後整体 45分': 45,
             'おっぱいマッサージ 45分': 45,
             '産後ピラティス 45分': 45,
-            '母子・きょうだいケア 90分': 90,
+            '母子/きょうだいケア 90分': 90,
             'ファミリーケア 135分': 135,
             '整体 45分': 45
         };
@@ -3113,6 +3170,26 @@ function applyPreviousSelection() {
                 ? `<span style="${labelStyle}"><strong>希望日時</strong></span> ${selectedFullDate}`
                 : '・日時が未選択です';
 
+            // 料金（希望日時が2026/9/1以降なら新料金。日時未選択時は本日の日付で判定）
+            let priceFieldText;
+            let priceNoticeHtml = ''; // 料金変更の注意書き（独立ブロックとして表示）
+            if (!selectedPricePair) {
+                priceFieldText = `<span style="${labelStyle}"><strong>料金</strong></span> ・メニューが未選択です`;
+            } else {
+                const priceRefDate = selectedFullDate ? parseSelectedFullDate(selectedFullDate) : new Date();
+                const useNew = isNewPricing(priceRefDate);
+                const amount = useNew ? selectedPricePair.new : selectedPricePair.old;
+                priceFieldText = `<span style="${labelStyle}"><strong>料金</strong></span> ${formatYen(amount)}`;
+                // 9月1日以降の希望日時が選択され、新料金が表示されるときは注意書きを出す
+                if (selectedFullDate && useNew) {
+                    priceNoticeHtml = `
+        <div class="price-change-notice">
+            <span class="price-change-notice__icon">⚠️</span>
+            <span class="price-change-notice__text">9月1日より料金変更となるため、こちらの料金になります。ご認識のほどよろしくお願いいたします。</span>
+        </div>`;
+                }
+            }
+
             // 修正ボタン付きのHTMLを作成
             document.getElementById('displayInfo').innerHTML = `
         <div class="info-row">
@@ -3141,11 +3218,19 @@ function applyPreviousSelection() {
         </div>
         <hr>
         <div class="info-row">
+            <p>${priceFieldText}</p>
+        </div>
+        ${priceNoticeHtml}
+        <hr>
+        <div class="info-row">
             <p>${selectedDateText}</p>
             <button class="edit-button" onclick="scrollToElement('calendar1')">修正</button>
         </div>
         <hr>
     `;
+
+            // メニュー詳細の基本料金表示も、選択中の希望日時に合わせて更新
+            refreshMenuBasicPrice();
         }
 
         // スクロール関数
@@ -3460,6 +3545,66 @@ function applyPreviousSelection() {
             toggleEmailCustomVisibility('2');
         });
 
+        // === 料金変更（2026年9月1日より）===========================
+        // 2026/9/1 0:00 以降は新料金、それ以前は旧料金を適用する
+        const PRICE_CHANGE_DATE = new Date(2026, 8, 1, 0, 0, 0); // 月は0始まり → 8 = 9月
+
+        // メニューごとの 旧料金 / 新料金（treatmentId 単位）
+        const MENU_PRICES = {
+            treatment1: { old: 9360,  new: 9500 },  // マタニティ整体
+            treatment2: { old: 9360,  new: 9500 },  // 産後整体
+            treatment3: { old: 9360,  new: 9500 },  // ベビーケア・育児相談
+            treatment4: { old: 6240,  new: 6400 },  // 産後ピラティス
+            treatment5: { old: 18400, new: 18700 }, // 母子・きょうだいケア
+            treatment6: { old: 27560, new: 28000 }, // ファミリーケア
+            treatment7: { old: 9360,  new: 9500 },  // 整体
+            treatment8: { old: 9360,  new: 9500 }   // おっぱいマッサージ
+        };
+
+        // 選択中メニューの料金ペア（ご予約内容の「料金」表示に使用）
+        let selectedPricePair = null;
+
+        // 指定日が新料金適用日（2026/9/1以降）かどうか
+        function isNewPricing(dateObj) {
+            return (dateObj instanceof Date) && !isNaN(dateObj) && dateObj >= PRICE_CHANGE_DATE;
+        }
+
+        // 数値を「￥9,360」形式に整形
+        function formatYen(n) {
+            return '￥' + Number(n).toLocaleString('ja-JP');
+        }
+
+        // メニュー詳細の「基本料金」表示（本日の日付で旧/新を切り替え）
+        function getBasicPriceLabel(pair) {
+            const useNew = isNewPricing(new Date());
+            return '基本料金：' + formatYen(useNew ? pair.new : pair.old);
+        }
+
+        // 「2026年09月05日 14:00」形式の文字列から Date を生成（時刻が無くてもOK）
+        function parseSelectedFullDate(str) {
+            const m = str && str.match(/(\d{4})年(\d{2})月(\d{2})日(?:\s+(\d{1,2}):(\d{2}))?/);
+            if (!m) return null;
+            return new Date(
+                Number(m[1]), Number(m[2]) - 1, Number(m[3]),
+                m[4] ? Number(m[4]) : 0, m[5] ? Number(m[5]) : 0, 0
+            );
+        }
+
+        // メニュー詳細の「基本料金」表示と改定予告を、選択中の希望日時に合わせて更新
+        function refreshMenuBasicPrice() {
+            if (!selectedPricePair) return;
+            const useNew = isNewPricing(selectedFullDate ? parseSelectedFullDate(selectedFullDate) : new Date());
+            const valueEl = document.getElementById('basicPriceValue');
+            if (valueEl) {
+                valueEl.textContent = '基本料金：' + formatYen(useNew ? selectedPricePair.new : selectedPricePair.old);
+            }
+            const noticeEl = document.getElementById('priceChangeNotice');
+            if (noticeEl) {
+                noticeEl.style.display = useNew ? 'none' : '';
+            }
+        }
+        // =========================================================
+
         function selectSymptom(button, treatmentId) {
             // 選択された日時をリセット
             selectedFullDate = '';
@@ -3483,6 +3628,7 @@ function applyPreviousSelection() {
                 selectedMenuTime = 0;
                 selectedSymptom = null; // 選択されたメニューをリセット
                 menuPrice = 0; // メニュー価格をリセット
+                selectedPricePair = null; // 料金ペアをリセット
                 treatmentText.style.display = 'none';
                 return; // ここで処理を終了
             } else {
@@ -3497,6 +3643,7 @@ function applyPreviousSelection() {
                 selectedMenuTime = menuTimes[selectedMenu] || 0; // メニュー時間を取得して保存
                 selectedSymptom = [selectedMenu]; // 選択されたメニュー名を配列として保存
                 menuPrice = parseInt(button.getAttribute('data-price'), 10) || 0;  // メニューの価格を取得
+                selectedPricePair = MENU_PRICES[treatmentId] || null; // 料金ペアを保存
             }
 
             console.log('選択されたメニューの時間:', selectedMenuTime);
@@ -3526,8 +3673,20 @@ function applyPreviousSelection() {
                     ? `<div class="treatment-price"><span>価格：</span>${price}</div>`
                     : '';
 
+                // 基本料金は「選択された希望日時」で旧/新を切替（日時未選択時は本日基準）
+                const basicUseNew = selectedPricePair
+                    ? isNewPricing(selectedFullDate ? parseSelectedFullDate(selectedFullDate) : new Date())
+                    : false;
+                const dynamicBasic = selectedPricePair
+                    ? ('基本料金：' + formatYen(basicUseNew ? selectedPricePair.new : selectedPricePair.old))
+                    : basic;
+                // 旧料金を表示しているとき（9/1より前の日時）だけ、改定後の料金を予告表示
+                let priceChangeNotice = '';
+                if (selectedPricePair) {
+                    priceChangeNotice = `<div class="treatment-price-change" id="priceChangeNotice"${basicUseNew ? ' style="display:none;"' : ''}>2026年09月01日より料金が次のように変更されます。<br>（9月1日以降の料金）${Number(selectedPricePair.new).toLocaleString('ja-JP')}円</div>`;
+                }
                 const basicContent = hasBasic
-                    ? `<div class="treatment-basic"><span></span><strong>${basic}</strong></div><div class="treatment-payment">支払い方法：現金、カード、PayPay</div>`
+                    ? `<div class="treatment-basic"><span></span><strong id="basicPriceValue">${dynamicBasic}</strong></div>${priceChangeNotice}<div class="treatment-payment">支払い方法：現金、カード、PayPay</div>`
                     : '';
 
                 // 出力順序を制御（タイトル→画像→詳細→料金→基本料金）
@@ -3754,6 +3913,7 @@ function applyPreviousSelection() {
 
             // メニューとオプションをリセット
             selectedSymptom = '';      // メニューのリセット
+            selectedPricePair = null;  // 料金ペアのリセット
             optiCount = '';    // オプションのリセット
             menuPrice = 0;             // メニューの価格リセット
             optionsPrice = 0;          // オプションの価格リセット
