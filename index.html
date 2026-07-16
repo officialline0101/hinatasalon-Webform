@@ -1833,6 +1833,47 @@
             background-color: #ede993;
         }
 
+        /* 予約前の注意事項ボックス */
+        .reservation-notice {
+            margin-top: 20px;
+            padding: 16px 18px;
+            background-color: #fff8e6;
+            border: 1px solid #f0d98a;
+            border-left: 5px solid #e6b800;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .reservation-notice__title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #a86a00;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .reservation-notice__list {
+            margin: 0;
+            padding-left: 1.2em;
+            list-style: disc;
+        }
+
+        .reservation-notice__list li {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .reservation-notice__list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .reservation-notice__list strong {
+            color: #c0392b;
+            font-weight: 700;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -1845,6 +1886,19 @@
             input,
             button {
                 font-size: 14px;
+            }
+
+            .reservation-notice {
+                padding: 14px 15px;
+            }
+
+            .reservation-notice__title {
+                font-size: 15px;
+            }
+
+            .reservation-notice__list li {
+                font-size: 13.5px;
+                line-height: 1.75;
             }
         }
 
@@ -2843,6 +2897,15 @@
 
         <div class="label">ご予約内容</div>
         <div id="displayInfo"></div> <!-- ここに選択された情報を表示します -->
+
+        <div class="reservation-notice" role="note">
+            <div class="reservation-notice__title">⚠️ ご予約前にご確認ください</div>
+            <ul class="reservation-notice__list">
+                <li>HPからのご予約は、<strong>お客様ご自身ではキャンセルができかねます。</strong></li>
+                <li>キャンセル料に関しましては、<strong>2日前の20時まで</strong>にLINEやお電話でご連絡をいただけない場合、翌日の対応となりますので<strong>【前日キャンセル料】</strong>が発生する旨、あらかじめご了承くださいませ。</li>
+                <li>LINEをお持ちの方は、<strong>LINEからのご予約をおすすめいたします。</strong></li>
+            </ul>
+        </div>
 
         <button class="submit-button" onclick="submitForm()" div id="section-message">予約を行う</button>
     </div>
@@ -3945,7 +4008,7 @@ function applyPreviousSelection() {
         }
 
         // ★GASのWebアプリURL（必ず /exec を使う）
-        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwT0wULuu9ThMAYNn01g-CJFC8aLftnBBGTQy6awQnuyJhgWSf3BclIMSDwBHTZJdRpWQ/exec';
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzz2eZsIW8ySk_h-BaPw4o03CiGk1E3Qkxm546Nvndk1MY1D3LTeGqNbwf3T-NR2Uk-LA/exec';
 
         /* ▼▼ 追加：サーバと同じ合言葉（簡易署名の鍵） ▼▼
            ※公開ページに置くと閲覧者も読めます。実運用では中継サーバ等で秘匿がベター。 */
