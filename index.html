@@ -2676,6 +2676,10 @@
             <button type="button" id="firstVisit" onclick="selectVisit(this)">初診</button>
             <button type="button" id="repeatVisit" onclick="selectVisit(this)">2回目以降</button>
         </div>
+        <div id="repeatVisitNote" style="display:none; margin:-4px 0 12px; padding:10px 12px; background:#fff3f3; border:1px solid #f5b5b5; border-radius:6px; color:#c0392b; font-size:14px; line-height:1.6;">
+            ※「2回目以降」は当院でのご利用が2回目以降の方向けです。<br>
+            初めてご利用の方は「初診」をお選びください。
+        </div>
 
         <div class="label" id="email">メールアドレス<span class="required">必須</span></div>
 
@@ -3902,6 +3906,7 @@ function applyPreviousSelection() {
                 // 初診の場合は表示し、必須バッジを表示
                 shoshinArea.style.display = 'block';
                 document.querySelectorAll('.shoshin-required').forEach(el => el.style.display = '');
+                document.getElementById('repeatVisitNote').style.display = 'none';
             } else {
                 // 2回目以降の場合は非表示にし、入力内容をクリア・必須バッジを非表示
                 shoshinArea.style.display = 'none';
@@ -3910,6 +3915,7 @@ function applyPreviousSelection() {
                 document.getElementById('msg_consul').value = '';
                 document.getElementById('msg_child').value = '';
                 document.querySelectorAll('.shoshin-required').forEach(el => el.style.display = 'none');
+                document.getElementById('repeatVisitNote').style.display = 'block';
             }
 
             // 選択された訪問回数に対応する時間を取得
