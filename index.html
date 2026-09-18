@@ -4030,6 +4030,18 @@ function applyPreviousSelection() {
             return `${rnd()}${rnd()}-${rnd()}-${rnd()}-${rnd()}-${rnd()}${rnd()}${rnd()}`;
         }
 
+        /* ★追加：予約内容が同じ間は同じ requestId を使い回す
+           （通信エラー後の押し直しや、ページ再読み込み後の再送でも二重予約にしない） */
+        function getRequestIdFor(contentKey) {
+            const STORE = 'hinata_resv_rid';
+            let saved = null;
+            try { saved = JSON.parse(sessionStorage.getItem(STORE) || 'null'); } catch (_) {}
+            if (saved && saved.key === contentKey && saved.id) return saved.id;
+            const id = genRequestId();
+            try { sessionStorage.setItem(STORE, JSON.stringify({ key: contentKey, id })); } catch (_) {}
+            return id;
+        }
+
         // JP → ISO(+09:00)
         function jpToISO(jp) {
             const m = jp && jp.match(/(\d{4})年(\d{2})月(\d{2})日\s+(\d{2}):(\d{2})/);
@@ -4147,7 +4159,8 @@ const payload = {
   startIso,
   durationMin,
   secret: SECURITY_SECRET,
-  requestId: genRequestId(),
+  // ★修正：同じ内容の再送では同じ requestId を使う（押し直しても二重予約にならない）
+  requestId: getRequestIdFor([startIso, durationMin, formData.selectedMenu, formData.email, formData.phone].join('|')),
   referrer: metaReferrer,
   userAgent: metaUA,
   utmSource: utm.utmSource,
@@ -4168,7 +4181,9 @@ const payload = {
       const msg = (json && json.error) ? json.error
         : (res.status === 302 || text.includes('ServiceLogin')) ? '認証が必要なURL（/dev等）です'
         : `HTTP ${res.status}`;
-      throw new Error(msg);
+      const e = new Error(msg);
+      e.serverError = !!(json && json.error); // サーバが理由を返したかどうか
+      throw e;
     }
 
     // ======== ここまであなたの元の処理 ========
@@ -4184,10 +4199,32 @@ const payload = {
     hideSubmitOverlay();
     unlockAll();
     SUBMITTING = false;
+    // ★修正：エラーの理由ごとに表示を分ける（通信エラーを「満席」と表示しない）
     if (err && err.message && err.message !== 'val') {
-      alert('ご予約が埋まっているか、すでにご予約されております。');
+      alert(submitErrorMessage(err));
     }
   }
+}
+
+/* ★追加：エラー内容に応じたお客様向けメッセージ */
+function submitErrorMessage(err) {
+  const m = String((err && err.message) || '');
+  if (err && err.serverError) {
+    if (/time conflict/i.test(m)) {
+      return '申し訳ありません。選択された日時はすでにご予約が埋まっております。\n別の日時をお選びください。';
+    }
+    if (/busy/i.test(m)) {
+      return 'ただいま混み合っております。\n少し時間をおいて、もう一度「予約を行う」を押してください。';
+    }
+    if (/business hours|Blackout/i.test(m)) {
+      return '選択された日時は受付時間外のため、ご予約いただけません。\n別の日時をお選びください。';
+    }
+  }
+  // 通信エラー・応答が読めなかった場合など（予約自体は完了している可能性がある）
+  return '通信が不安定なため、ご予約が完了したか確認できませんでした。\n\n'
+    + 'ご入力のメールアドレスに「予約完了メール」が届いていれば、ご予約は完了しています。\n\n'
+    + '届いていない場合は、内容を変えずにもう一度「予約を行う」を押してください。\n'
+    + '同じ内容であれば二重予約にはなりません。';
 }
 
         function formatDate(dateStr) {
