@@ -2787,8 +2787,8 @@
             </a>条項の【6】をご確認ください。<br><br>
     <span style="color:red;">
         【託児の日】<br>
-        12月：2日・15日<br>
-        令和9年1月：12日・27日
+        9月：8日・29日<br>
+        10月：6日・20日
     </span>
 </div>
         <div class="calendar-container">
@@ -2846,7 +2846,7 @@
             </a>
             をお読みください。<br>
             ・初回は予約時間の10分前にお越しくださいませ。<br>
-            ・妊婦さんは【分娩予定日】<br>
+            ・妊婦さんは【出産予定日】<br>
             ・産後整体やピラティスでのご予約の方は【出産日】<br>
             ・赤ちゃんでのご予約は【生年月日】<br>
             それぞれ西暦からご記入ください。<br>
@@ -2861,10 +2861,10 @@
                 <span class="agree-text">利用規約に同意しました</span>
             </label>
         </div>
-        <!-- 生年月日・分娩予定日 -->
-        <div class="label">生年月日 / 分娩予定日<span class="required shoshin-required" style="display:none;">必須</span></div>
+        <!-- 生年月日・出産予定日 -->
+        <div class="label">生年月日 / 出産予定日<span class="required shoshin-required" style="display:none;">必須</span></div>
         <div class="info-text" style="font-size:13px; padding:10px 14px; margin-bottom:6px;">
-            ベビーケアの方は赤ちゃんの生年月日を、産後整体とおっぱいマッサージの方は分娩日を、マタニティ整体の方は分娩予定日をご記入ください
+            ベビーケアの方は赤ちゃんの生年月日を、産後整体とおっぱいマッサージの方は分娩日を、マタニティ整体の方は出産予定日をご記入ください
         </div>
         <input type="text" id="msg_birthday" placeholder="例：2024年4月1日" oninput="updateMessage()">
 
@@ -2891,7 +2891,7 @@
             var child    = document.getElementById('msg_child').value.trim();
 
             var parts = [];
-            if (birthday) parts.push('【生年月日/分娩予定日】' + birthday);
+            if (birthday) parts.push('【生年月日/出産予定日】' + birthday);
             if (consul)   parts.push('【相談内容】' + consul);
             if (child)    parts.push('【第何子】' + child);
 
@@ -4128,7 +4128,7 @@ async function submitForm() {
     if (!formData.dates) { alert('希望日時を選択してください。'); throw new Error('val'); }
     // 初診の場合のみチェックボックスと各フィールドを必須チェック
     if (visitCount === '初診' && !document.getElementById('agreeCheck').checked) { alert('利用規約に同意してください。'); throw new Error('val'); }
-    if (visitCount === '初診' && !document.getElementById('msg_birthday').value.trim()) { alert('生年月日 / 分娩予定日を入力してください。'); throw new Error('val'); }
+    if (visitCount === '初診' && !document.getElementById('msg_birthday').value.trim()) { alert('生年月日 / 出産予定日を入力してください。'); throw new Error('val'); }
     if (visitCount === '初診' && !document.getElementById('msg_consul').value.trim()) { alert('相談内容を入力してください。'); throw new Error('val'); }
     if (visitCount === '初診' && !document.getElementById('msg_child').value.trim()) { alert('第何子かを入力してください。'); throw new Error('val'); }
 
